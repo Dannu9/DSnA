@@ -3,6 +3,7 @@
 
 void main()
 {
-	printf("%d", Multiply(3));
+	IndirectRecusrionA(100);
+	//printf("%d", Multiply(3));
 }
 
