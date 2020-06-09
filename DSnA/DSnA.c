@@ -3,7 +3,6 @@
 
 void main()
 {
-	IndirectRecusrionA(100);
-	//printf("%d", Multiply(3));
+	printf("%d", NestedRecursion(95));
 }
 

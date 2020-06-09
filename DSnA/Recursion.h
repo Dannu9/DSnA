@@ -8,6 +8,7 @@ void TreeRecursion(int n);
 void IndirectRecusrionB(int n);
 void IndirectRecusrionC(int n);
 void IndirectRecusrionA(int n);
+int NestedRecursion(int n);
 
 // Simple tail recursion (n->1)
 void TailRecursion(int n) {
@@ -27,17 +28,33 @@ void HeadRecursion(int n) {
 	}
 }
 
-// Summation / Triangual recursion (1+2..+n). 
+// Summation / Triangual recursion 
 int TriangualRecursion(int n) 
 {
-	if (n>0)
+	if (n == 0)
+	{
+		return 0;
+	}
+	else 
 	{
 		return TriangualRecursion(n - 1) + n;
 	}
-	return 0;
 }
 
-// Power of two recursion, n*n. (Static)
+// Factorial recursion
+int FactorialRecursion(int n)
+{
+	if (n == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return FactorialRecursion(n - 1) * n;
+	}
+}
+
+// Power of two recursion, n*n (Static)
 int PowerOfTwoRecursion(int n) {
 	static int x = 0;
 	if (n > 0)
@@ -62,8 +79,8 @@ void TreeRecursion(int n) {
 void IndirectRecusrionA(int n) {
 	if (n > 0)
 	{
-		printf("A:%d", n);
-		IndirectRecusrionB(n - 2);
+		printf("\nA:%d", n);
+		IndirectRecusrionB(n - 3);
 	}
 }
 
@@ -71,7 +88,7 @@ void IndirectRecusrionA(int n) {
 void IndirectRecusrionB(int n) {
 	if (n > 0)
 	{
-		printf("B:%d", n);
+		printf("\nB:%d", n);
 		IndirectRecusrionC(n/2);
 	}
 }
@@ -80,10 +97,18 @@ void IndirectRecusrionB(int n) {
 void IndirectRecusrionC(int n) {
 	if (n > 0)
 	{
-		printf("C:%d", n);
+		printf("\nC:%d", n);
 		IndirectRecusrionA(n-1);
 	}
 }
 
-
+// Nested recursion
+int NestedRecursion(int n) 
+{
+	if (n>100)
+	{
+		return n - 10;
+	}
+	return NestedRecursion(NestedRecursion(n + 11));
+}
 
