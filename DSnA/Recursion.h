@@ -3,6 +3,7 @@
 void TailRecursion(int n);
 void HeadRecursion(int n);
 int TriangualRecursion(int n);
+int FactorialRecursion(int n);
 int PowerOfTwoRecursion(int n);
 void TreeRecursion(int n);
 void IndirectRecusrionB(int n);
@@ -63,6 +64,18 @@ int PowerOfTwoRecursion(int n) {
 		return PowerOfTwoRecursion(n - 1) + x;
 	}
 	return 0;
+}
+
+// Power recursion, m is base and n is power
+int PowerRecursion(int m, int n) {
+	if (n == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return PowerRecursion(m, n - 1) * m;
+	}
 }
 
 // Tree recursion 

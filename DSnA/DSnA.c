@@ -3,6 +3,6 @@
 
 void main()
 {
-	printf("%d", NestedRecursion(95));
+	printf("%d", PowerRecursion(8,3));
 }
 
