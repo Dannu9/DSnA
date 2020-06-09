@@ -3,6 +3,7 @@
 
 void main()
 {
-	printf("%d", fun(6));
+	TailRecursion(5);
+	HeadRecursion(10);
 }
 
