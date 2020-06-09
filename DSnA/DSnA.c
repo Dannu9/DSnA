@@ -3,7 +3,6 @@
 
 void main()
 {
-	TailRecursion(5);
-	HeadRecursion(10);
+	printf("%d", Multiply(3));
 }
 
