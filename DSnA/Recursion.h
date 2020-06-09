@@ -5,11 +5,13 @@ void HeadRecursion(int n);
 int TriangualRecursion(int n);
 int FactorialRecursion(int n);
 int PowerOfTwoRecursion(int n);
+int PowerRecursion(int m, int n);
 void TreeRecursion(int n);
 void IndirectRecusrionB(int n);
 void IndirectRecusrionC(int n);
 void IndirectRecusrionA(int n);
 int NestedRecursion(int n);
+double TaylorSeriesRecursion(int x, int n);
 
 // Simple tail recursion (n->1)
 void TailRecursion(int n) {
@@ -55,7 +57,7 @@ int FactorialRecursion(int n)
 	}
 }
 
-// Power of two recursion, n*n (Static)
+// Power of two recursion, n*n (static)
 int PowerOfTwoRecursion(int n) {
 	static int x = 0;
 	if (n > 0)
@@ -125,3 +127,20 @@ int NestedRecursion(int n)
 	return NestedRecursion(NestedRecursion(n + 11));
 }
 
+// Talyor series recursion, x is power and n is count of iterations
+double TaylorSeriesRecursion(int x, int n)
+{
+	static double pow = 1, fac = 1;
+	double result;
+	if (n == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		result = TaylorSeriesRecursion(x, n - 1);
+		pow *= x;
+		fac *= n;
+		return result + pow / fac;
+	}
+}

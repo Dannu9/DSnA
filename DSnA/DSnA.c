@@ -3,6 +3,6 @@
 
 void main()
 {
-	printf("%d", PowerRecursion(8,3));
+	printf("%lf", TaylorSeriesRecursion(3,10));
 }
 
