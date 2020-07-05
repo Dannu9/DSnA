@@ -3,6 +3,6 @@
 
 void main()
 {
-	printf("%lf", TaylorSeriesRecursion(3,10));
+	printf("%lf", TaylorSeriesSinSeries(36,10));
 }
 

@@ -12,6 +12,10 @@ void IndirectRecusrionC(int n);
 void IndirectRecusrionA(int n);
 int NestedRecursion(int n);
 double TaylorSeriesRecursion(int x, int n);
+double TaylorSeriesRecursionHornersRule(int x, int n);
+double TaylorSeriesGeometricSeries(int x, int n);
+double TaylorSeriesCosSeries(int x, int n);
+
 
 // Simple tail recursion (n->1)
 void TailRecursion(int n) {
@@ -128,6 +132,8 @@ int NestedRecursion(int n)
 }
 
 // Talyor series recursion, x is power and n is count of iterations
+// Calculation is e^x and n gives more accurasy to calculation.
+// Time = O(n^2)
 double TaylorSeriesRecursion(int x, int n)
 {
 	static double pow = 1, fac = 1;
@@ -143,4 +149,56 @@ double TaylorSeriesRecursion(int x, int n)
 		fac *= n;
 		return result + pow / fac;
 	}
+}
+
+// Talyor series recursion, x is power and n is count of iterations
+// Time = O(n)
+double TaylorSeriesRecursionHornersRule(int x, int n) {
+	static double r;
+	if (n == 0)
+	{
+		return r;
+	}
+	r = 1 + x *r / n;
+	return TaylorSeriesRecursionHornersRule(x, n - 1);
+}
+
+// Taylor Series for Geometric series
+// 1 + x + x^2 .... n is iterations count
+double TaylorSeriesGeometricSeries(int x, int n) {
+
+	static double r;
+	if (n == 0)
+	{
+		return r;
+	}
+	r = 1 + x * r;
+	return TaylorSeriesGeometricSeries(x,n-1);
+}
+
+// Taylor Series for Cos calculation. x is in radians &
+// n must be even value! If n is odd, it will return -inf
+double TaylorSeriesCosSeries(double x, int n) {
+	static double r = 1;
+	if (n > 0)
+	{
+		r = 1 - ((x * x * r) / (n * (n - 1.0)));
+		return TaylorSeriesCosSeries(x, n - 2);
+	}
+	else return r;
+}
+
+// Taylor Series for Sin calculation. x is in deg &
+// n must be odd value! If n is even, it will return -inf
+double TaylorSeriesSinSeries(double x, int n) {
+	double s = 1;
+	x = x * 3.14159 / 180; // DEC --> RAD
+	double t = x;
+	s = x;
+	for (int i = 1; i <= n; i++)
+	{
+		t = (t * (-1) * x * x) / ((double)2 * i * ((double)2 * i + (double)1));
+		s = s + t;
+	}
+	return s;
 }
