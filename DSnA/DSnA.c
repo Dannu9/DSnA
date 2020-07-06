@@ -4,7 +4,6 @@
 
 void main()
 {
-	DrawPascalsTriangleToConsole(10);
-	//printf("%d", PascalTriangleRecursio(4,2));
+	TowerOfHanoiInstructionCalcRecursion(4, 1, 2, 3);
 }
 

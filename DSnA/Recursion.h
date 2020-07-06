@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+// I want to thank Abdul Bari for his Udemy lessons
+// This code can be found from this course https://www.udemy.com/course/datastructurescncpp/
+
 void TailRecursion(int n);
 void HeadRecursion(int n);
 int TriangualRecursion(int n);
@@ -236,6 +239,16 @@ int PascalTriangleRecursio(int n, int r) {
 	else
 	{
 		return PascalTriangleRecursio(n - 1, r - 1) + PascalTriangleRecursio(n - 1, r);
+	}
+}
+
+// Tower of Hanoi move calculator with recursion, n is number of disks to move A to C
+void TowerOfHanoiInstructionCalcRecursion(int n, int At, int Bt, int Ct) {
+	if (n > 0)
+	{
+		TowerOfHanoiInstructionCalcRecursion(n - 1, At, Ct, Bt);
+		printf("%d --> %d \n", At, Ct);
+		TowerOfHanoiInstructionCalcRecursion(n - 1, Bt, At, Ct);
 	}
 }
 
