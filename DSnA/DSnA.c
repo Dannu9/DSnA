@@ -3,6 +3,6 @@
 
 void main()
 {
-	printf("%lf", TaylorSeriesSinSeries(36,10));
+	printf("%d", FibonacciRecursio(6));
 }
 

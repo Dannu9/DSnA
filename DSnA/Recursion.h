@@ -14,8 +14,9 @@ int NestedRecursion(int n);
 double TaylorSeriesRecursion(int x, int n);
 double TaylorSeriesRecursionHornersRule(int x, int n);
 double TaylorSeriesGeometricSeries(int x, int n);
-double TaylorSeriesCosSeries(int x, int n);
-
+double TaylorSeriesCosSeries(double x, int n);
+double TaylorSeriesSinSeries(double x, int n);
+int FibonacciRecursio(int n);
 
 // Simple tail recursion (n->1)
 void TailRecursion(int n) {
@@ -192,7 +193,7 @@ double TaylorSeriesCosSeries(double x, int n) {
 // n must be odd value! If n is even, it will return -inf
 double TaylorSeriesSinSeries(double x, int n) {
 	double s = 1;
-	x = x * 3.14159 / 180; // DEC --> RAD
+	x = x * 3.14159 / 180; // DEG --> RAD
 	double t = x;
 	s = x;
 	for (int i = 1; i <= n; i++)
@@ -201,4 +202,13 @@ double TaylorSeriesSinSeries(double x, int n) {
 		s = s + t;
 	}
 	return s;
+}
+
+// Fibonacci series. n is number of iterations 
+int FibonacciRecursio(int n) {
+	if (n <= 1)
+	{
+		return n;
+	}
+	return FibonacciRecursio(n - 2) + FibonacciRecursio(n - 1);
 }
