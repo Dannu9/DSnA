@@ -26,5 +26,8 @@
     <ClInclude Include="RandomStuff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayADT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

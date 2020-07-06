@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 // I want to thank Abdul Bari for his Udemy lessons
-// This code can be found from this course https://www.udemy.com/course/datastructurescncpp/
+// This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
 
 void TailRecursion(int n);
 void HeadRecursion(int n);
@@ -247,7 +247,7 @@ void TowerOfHanoiInstructionCalcRecursion(int n, int At, int Bt, int Ct) {
 	if (n > 0)
 	{
 		TowerOfHanoiInstructionCalcRecursion(n - 1, At, Ct, Bt);
-		printf("%d --> %d \n", At, Ct);
+		printf("%d -->wwwwwwwwwwwww %d \n", At, Ct);
 		TowerOfHanoiInstructionCalcRecursion(n - 1, Bt, At, Ct);
 	}
 }
