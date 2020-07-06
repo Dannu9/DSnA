@@ -17,6 +17,7 @@ double TaylorSeriesGeometricSeries(int x, int n);
 double TaylorSeriesCosSeries(double x, int n);
 double TaylorSeriesSinSeries(double x, int n);
 int FibonacciRecursio(int n);
+int CombinationRecursion(int n, int r);
 
 // Simple tail recursion (n->1)
 void TailRecursion(int n) {
@@ -212,3 +213,29 @@ int FibonacciRecursio(int n) {
 	}
 	return FibonacciRecursio(n - 2) + FibonacciRecursio(n - 1);
 }
+
+// Combination Recursion. n is count of iterations and r is set size. 
+// r must be smaller value than n 
+int CombinationRecursion(int n, int r) {
+
+	int numer1, denom1, denom2;
+	numer1 = FactorialRecursion(n);
+	denom1 = FactorialRecursion(r);
+	denom2 = FactorialRecursion(n - r);
+	return numer1 / denom1 * denom2;
+}
+
+// Works like CombinationRecursion function. 
+// n is the row of pascal triangle or count of iterations
+// r is number of "column" in the pascal triangle, or set size.
+int PascalTriangleRecursio(int n, int r) {
+	if (r == 0 || n == r)
+	{
+		return 1;
+	}
+	else
+	{
+		return PascalTriangleRecursio(n - 1, r - 1) + PascalTriangleRecursio(n - 1, r);
+	}
+}
+

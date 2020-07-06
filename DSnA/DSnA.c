@@ -3,6 +3,6 @@
 
 void main()
 {
-	printf("%d", FibonacciRecursio(6));
+	printf("%d", PascalTriangleRecursio(4,2));
 }
 
