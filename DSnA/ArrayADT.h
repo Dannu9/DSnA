@@ -15,7 +15,11 @@ void LinearSearch(struct TestArray arr, int val);
 void SimpleSelectionSort(struct TestArray* arr);
 void BinarySearch(struct TestArray arr, int val);
 void GetValueFromIndex(struct TestArray arr, int index);
-void SetValue(struct TestArrat* arr, int index, int val);
+void SetValue(struct TestArray* arr, int index, int val);
+void PrintMaxVal(struct TestArray arr);
+void PrintMinVal(struct TestArray arr);
+void PrintSumVal(struct TestArray arr);
+
 
 struct TestArray {
 	int* A;
@@ -173,6 +177,42 @@ void SetValue(struct TestArray* arr, int index, int val) {
 	}
 }
 
+// Print max value in array
+void PrintMaxVal(struct TestArray arr) {
+	int p = arr.A[0], i;
+	for (i = 1; i < arr.length; i++)
+	{
+		if (arr.A[i] > p)
+		{
+			p = arr.A[i];
+		}
+	}
+	printf("Max values is %d\n", p);
+}
+
+// Print min value in array
+void PrintMinVal(struct TestArray arr) {
+	int p = arr.A[0], i;
+	for (i = 1; i < arr.length; i++)
+	{
+		if (arr.A[i] < p)
+		{
+			p = arr.A[i];
+		}
+	}
+	printf("Min values is %d\n", p);
+}
+
+// Gets sum of all values in array. 
+void PrintSumVal(struct TestArray arr) {
+	int i, sum = 0;
+	for (i = 0; i < arr.length; i++)
+	{
+		sum += arr.A[i];
+	}
+	printf("Array's sum is %d", sum);
+}
+
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
@@ -194,11 +234,6 @@ void TestArrayMain() {
 		arr.length++;
 	}
 
-	//InsertToArray(&arr, 12, 1);
-	//DeleteFromArray(&arr, 2);
-	//AddToArray(&arr, 12);
-	//LinearSearch(arr, 5);
-	//SimpleSelectionSort(&arr);
-	//BinarySearch(arr,5);
+	PrintSumVal(arr);
 	DisplayArray(arr);
 }
