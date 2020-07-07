@@ -11,7 +11,11 @@ void DisplayArray(struct TestArray arr);
 void AddToArray(struct TestArray* arr, int value);
 void InsertToArray(struct TestArray* arr, int value, int index);
 void DeleteFromArray(struct TestArray* arr, int index);
-
+void LinearSearch(struct TestArray arr, int val);
+void SimpleSelectionSort(struct TestArray* arr);
+void BinarySearch(struct TestArray arr, int val);
+void GetValueFromIndex(struct TestArray arr, int index);
+void SetValue(struct TestArrat* arr, int index, int val);
 
 struct TestArray {
 	int* A;
@@ -85,6 +89,90 @@ void DeleteFromArray(struct TestArray* arr, int index) {
 	}
 }
 
+// Linear Search. Search value from first index to last.
+// Prints only first value, if there is multiple copies of same value in array! 
+void LinearSearch(struct TestArray arr, int val) {
+	int i;
+
+	for (i = 0; i < arr.length; i++)
+	{
+		if (val == arr.A[i])
+		{
+			printf("Value %d was found from array index %d\n", val, i);
+			return;
+		}
+	}
+	printf("Value was not found!\n");
+}
+
+// Binary Search. Uses SelectionSort also, to sort the array in right form.
+void BinarySearch(struct TestArray arr, int val) {
+	int l = 0, mid, h = arr.length-1, res;
+	while (l <= h)
+	{
+		mid = (l + h) / 2;
+		if (val == arr.A[mid])
+		{
+			printf("Value %d was found from array index %d\n", val, mid);
+			return;
+		}
+		else if (val < arr.A[mid])
+		{
+			h = mid - 1;
+		}
+		else
+		{
+			l = mid + 1;
+		}
+	}
+	printf("Value was not found from this array\n");
+}
+
+// Selection sort, which is used in ArrayADR.h to get test array sorted. 
+void SimpleSelectionSort(struct TestArray* arr) {
+
+	for (int i = 0; i < arr->length - 1; i++)
+	{
+		int Imin = i;
+		for (int j = i + 1; j < arr->length; j++)
+		{
+			if (arr->A[j] < arr->A[Imin])
+			{
+				Imin = j;
+			}
+		}
+		int temp = arr->A[Imin];
+		arr->A[Imin] = arr->A[i];
+		arr->A[i] = temp;
+	}
+}
+
+// Print value from specific index of array 0...n
+void GetValueFromIndex(struct TestArray arr, int index) {
+	if (index < arr.length && index >= 0)
+	{	
+		int val = arr.A[index];
+		printf("Value %d is in index %d\n", val, index);
+	}
+	else
+	{
+		printf("Index is out of boundaries\n");
+	}
+}
+
+// Set value to specific index in array
+void SetValue(struct TestArray* arr, int index, int val) {
+	if (index < arr->length && index >= 0)
+	{
+		arr->A[index] = val;
+		printf("Value %d was added in index %d succesfully\n", val, index);
+	}
+	else
+	{
+		printf("Index is out of boundaries\n");
+	}
+}
+
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
@@ -107,7 +195,10 @@ void TestArrayMain() {
 	}
 
 	//InsertToArray(&arr, 12, 1);
-	DeleteFromArray(&arr, 2);
+	//DeleteFromArray(&arr, 2);
 	//AddToArray(&arr, 12);
+	//LinearSearch(arr, 5);
+	//SimpleSelectionSort(&arr);
+	//BinarySearch(arr,5);
 	DisplayArray(arr);
 }
