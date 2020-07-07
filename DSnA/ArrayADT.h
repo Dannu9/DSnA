@@ -19,6 +19,8 @@ void SetValue(struct TestArray* arr, int index, int val);
 void PrintMaxVal(struct TestArray arr);
 void PrintMinVal(struct TestArray arr);
 void PrintSumVal(struct TestArray arr);
+void PrintAvgVal(struct TestArray arr);
+
 
 
 struct TestArray {
@@ -213,6 +215,18 @@ void PrintSumVal(struct TestArray arr) {
 	printf("Array's sum is %d", sum);
 }
 
+// Calculate average value of all values in array
+void PrintAvgVal(struct TestArray arr) {
+	
+	int i, sum = 0;
+	for (i = 0; i < arr.length; i++)
+	{
+		sum += arr.A[i];
+	}
+	float avg = (float)sum / (float)arr.length;
+	printf("Average value of all values in array is %lf", avg);
+}
+
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
@@ -234,6 +248,6 @@ void TestArrayMain() {
 		arr.length++;
 	}
 
-	PrintSumVal(arr);
+	PrintAvgVal(arr);
 	DisplayArray(arr);
 }
