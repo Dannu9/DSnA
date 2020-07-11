@@ -8,6 +8,7 @@
 
 void TestArrayMain();
 void DisplayArray(struct TestArray arr);
+void DisplayArrayMerge(struct TestArrayForMerge arr);
 void AddToArray(struct TestArray* arr, int value);
 void InsertToArray(struct TestArray* arr, int value, int index);
 void DeleteFromArray(struct TestArray* arr, int index);
@@ -20,11 +21,23 @@ void PrintMaxVal(struct TestArray arr);
 void PrintMinVal(struct TestArray arr);
 void PrintSumVal(struct TestArray arr);
 void PrintAvgVal(struct TestArray arr);
+void ReverseArray(struct TestArray* arr);
+void LeftShiftArray(struct TestArray* arr, int rotate);
+void RightShiftArray(struct TestArray* arr, int rotate);
+void InsertToSortedArray(struct TestArray* arr, int value);
+void PrintIsArraySorted(struct TestArray arr);
+struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge* arrA, struct TestArrayForMerge* arrB);
 
 
 
 struct TestArray {
 	int* A;
+	int size; // Array size
+	int length; // number of elements in array
+};
+
+struct TestArrayForMerge {
+	int A[10];
 	int size; // Array size
 	int length; // number of elements in array
 };
@@ -37,6 +50,14 @@ void DisplayArray(struct TestArray arr) {
 	{
 		printf("%d\n", arr.A[i]);
 	}
+}
+
+void DisplayArrayMerge(struct TestArrayForMerge arr)
+{
+	int i;
+	printf("\nElements are\n");
+	for (i = 0; i < arr.length; i++)
+		printf("%d ", arr.A[i]);
 }
 
 // Adds a value end of the array, if it's possible. 
@@ -113,7 +134,7 @@ void LinearSearch(struct TestArray arr, int val) {
 
 // Binary Search. Uses SelectionSort also, to sort the array in right form.
 void BinarySearch(struct TestArray arr, int val) {
-	int l = 0, mid, h = arr.length-1, res;
+	int l = 0, mid, h = arr.length-1;
 	while (l <= h)
 	{
 		mid = (l + h) / 2;
@@ -151,6 +172,7 @@ void SimpleSelectionSort(struct TestArray* arr) {
 		arr->A[Imin] = arr->A[i];
 		arr->A[i] = temp;
 	}
+	printf("Array is sorted!\n");
 }
 
 // Print value from specific index of array 0...n
@@ -227,27 +249,166 @@ void PrintAvgVal(struct TestArray arr) {
 	printf("Average value of all values in array is %lf", avg);
 }
 
+// Reverse all values in array
+void ReverseArray(struct TestArray* arr) {
+	int i, j, temp;
+	for (i = 0, j = arr->length - 1; i < j; i++, j--)
+	{
+		temp = arr->A[i];
+		arr->A[i] = arr->A[j];
+		arr->A[j] = temp;
+	}
+}
+
+// Left shift array, will replace last value with 0 (rotate = 0)
+// If rotate variable is 1, last value will be replaced with the first one.
+void LeftShiftArray(struct TestArray* arr, int rotate) {
+	if (rotate == 0)
+	{
+		int i;
+		for (i = 0; i < arr->length-1; i++)
+		{
+			arr->A[i] = arr->A[i + 1];
+		}
+		arr->A[arr->length - 1] = 0;
+		printf("Shift Complete!\n");
+	}
+	else if (rotate == 1) {
+		int i, temp = arr->A[0];
+		for (i = 0; i < arr->length - 1; i++)
+		{
+			arr->A[i] = arr->A[i + 1];
+		}
+		arr->A[arr->length - 1] = temp;
+		printf("Rotate Complete\n");
+	}
+	else {
+		printf("Rotate value was incorrect, please give either value 1 or 0!");
+	}
+}
+
+// Right shift array, will replace first value with 0 (rotate = 0)
+// If rotate variable is 1, first value will be replaced with the first one.
+void RightShiftArray(struct TestArray* arr, int rotate) {
+	if (rotate == 0)
+	{
+		int i;
+		for (i = arr->length; i >= 0 ; i--)
+		{
+			arr->A[i] = arr->A[i - 1];
+		}
+		arr->A[0] = 0;
+		printf("Shift complete\n");
+	}
+	else if (rotate == 1) {
+		int i, temp = arr->A[arr->length-1];
+		for (i = arr->length; i >= 0; i--)
+		{
+			arr->A[i] = arr->A[i - 1];
+		}
+		arr->A[0] = temp;
+		printf("Rotate complete\n");
+	}
+	else {
+		printf("Rotate value was incorrect, please give either value 1 or 0!");
+	}
+}
+
+// Insert a value to sorted array. Inserting is faster when array is sorted.
+// This is possible because shifting can be done while checking and comparing the current index value
+void InsertToSortedArray(struct TestArray* arr, int value) {
+	if (arr->length >= arr->size)
+	{
+		// No free space
+		return;
+	}
+	int i = arr->length - 1;
+	while (i>= 0 && arr->A[i] > value)
+	{
+		arr->A[i + 1] = arr->A[i];
+		i--;
+	}
+	arr->A[i + 1] = value;
+	printf("Insert complete!\n");
+	arr->length++;
+}
+
+// Checks if the array is sorted or not. Result will be printed out.
+void PrintIsArraySorted(struct TestArray arr) {
+	int i;
+	for (i = 0; i < arr.length-1; i++)
+	{
+		if (arr.A[i] > arr.A[i+1])
+		{
+			printf("Array is not sorted!\n");
+			return;
+		}
+	}
+	printf("Array is sorted!\n");
+}
+
+
+
+// Merge two arrays
+struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge *arrA, struct TestArrayForMerge *arrB) {
+	struct TestArrayForMerge*arrC = (struct TestArrayForMerge*)malloc(sizeof(struct TestArrayForMerge));
+	int i = 0,
+		j = 0,
+		k = 0;
+
+	// Inset sorted data into new array till one of arrays A or B pointer index is end of the array.
+	while (i<arrA->length && j < arrB->length)
+	{
+		if (arrA->A[i]<arrB->A[j])
+		{
+			arrC->A[k++] = arrA->A[i++];
+		}
+		else
+		{
+			arrC->A[k++] = arrB->A[j++];
+		}
+	}
+
+	// One of arrays is end, now we insert last data from other array
+	for (; i < arrA->length; i++)
+	{
+		arrC->A[k++] = arrA->A[i];
+	}
+	for (; j < arrB->length; j++)
+	{
+		arrC->A[k++] = arrB->A[j];
+	}
+
+	arrC->length = arrA->length + arrB->length;
+	arrC->size = arrA->size + arrB->size;
+
+	return arrC;
+}
+
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
-	int numberVal, i;
-	struct TestArray arr;
+	//int numberVal, i;
+	//struct TestArray arr;
 
-	printf("Enter size of array you want to create\n");
-	scanf_s("%d", &arr.size);
-	arr.A = (int*)malloc(arr.size * sizeof(int));
-	arr.length = 0;
+	//printf("Enter size of array you want to create\n");
+	//scanf_s("%d", &arr.size);
+	//arr.A = (int*)malloc(arr.size * sizeof(int));
+	//arr.length = 0;
 
-	printf("How meny numbers do you want to add to the array?\n");
-	scanf_s("%d", &numberVal);
+	//printf("How meny numbers do you want to add to the array?\n");
+	//scanf_s("%d", &numberVal);
 
-	printf("\nWrite all elements: ");
-	for (i = 0; i < numberVal; i++)
-	{
-		scanf_s("%d", &arr.A[i]);
-		arr.length++;
-	}
+	//printf("\nWrite all elements: ");
+	//for (i = 0; i < numberVal; i++)
+	//{
+	//	scanf_s("%d", &arr.A[i]);
+	//	arr.length++;
+	//}
 
-	PrintAvgVal(arr);
-	DisplayArray(arr);
+	struct TestArrayForMerge arr1 ={{2,5,10,14,23},10,5};
+	struct TestArrayForMerge arr2 = {{3,4,6,12,17},10,5};
+	struct TestArrayForMerge* arr3;
+	arr3 = MergeTwoTestArrays(&arr1, &arr2);
+	DisplayArrayMerge(*arr3);
 }
