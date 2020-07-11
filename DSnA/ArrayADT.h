@@ -4,11 +4,12 @@
 // I want to thank Abdul Bari for his Udemy lessons
 // This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
 
-// Run TestArrayMain func! 
+// Run TestArrayMain() or StaticTestArrayMain()!
+// TestArrayMain works for non static array and StaticTestArrayMain is for static version.
 
 void TestArrayMain();
 void DisplayArray(struct TestArray arr);
-void DisplayArrayMerge(struct TestArrayForMerge arr);
+void DisplayArrayMerge(struct TestArrayStaticSize arr);
 void AddToArray(struct TestArray* arr, int value);
 void InsertToArray(struct TestArray* arr, int value, int index);
 void DeleteFromArray(struct TestArray* arr, int index);
@@ -26,9 +27,10 @@ void LeftShiftArray(struct TestArray* arr, int rotate);
 void RightShiftArray(struct TestArray* arr, int rotate);
 void InsertToSortedArray(struct TestArray* arr, int value);
 void PrintIsArraySorted(struct TestArray arr);
-struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge* arrA, struct TestArrayForMerge* arrB);
-
-
+struct TestArrayStaticSize* MergeTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
+struct TestArrayStaticSize* UnionTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
+struct TestArrayStaticSize* IntersectTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
+struct TestArrayStaticSize* DifferenceTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
 
 struct TestArray {
 	int* A;
@@ -36,7 +38,7 @@ struct TestArray {
 	int length; // number of elements in array
 };
 
-struct TestArrayForMerge {
+struct TestArrayStaticSize {
 	int A[10];
 	int size; // Array size
 	int length; // number of elements in array
@@ -52,7 +54,8 @@ void DisplayArray(struct TestArray arr) {
 	}
 }
 
-void DisplayArrayMerge(struct TestArrayForMerge arr)
+// Print array to console TestArrayStaticSize-version
+void DisplayArrayMerge(struct TestArrayStaticSize arr)
 {
 	int i;
 	printf("\nElements are\n");
@@ -347,11 +350,9 @@ void PrintIsArraySorted(struct TestArray arr) {
 	printf("Array is sorted!\n");
 }
 
-
-
-// Merge two arrays
-struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge *arrA, struct TestArrayForMerge *arrB) {
-	struct TestArrayForMerge*arrC = (struct TestArrayForMerge*)malloc(sizeof(struct TestArrayForMerge));
+// Merge of two sorted arrays, does not work with basic TestArrayMain, use StaticTestArrayMain. 
+struct TestArrayStaticSize* MergeTwoTestArrays(struct TestArrayStaticSize *arrA, struct TestArrayStaticSize *arrB) {
+	struct TestArrayStaticSize*arrC = (struct TestArrayStaticSize*)malloc(sizeof(struct TestArrayStaticSize));
 	int i = 0,
 		j = 0,
 		k = 0;
@@ -380,7 +381,123 @@ struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge *arrA, str
 	}
 
 	arrC->length = arrA->length + arrB->length;
-	arrC->size = arrA->size + arrB->size;
+	arrC->size = 10;
+
+	return arrC;
+}
+
+// Union of two sorted arrays. Use StaticTestArrayMain. Union differs from merge, by copying only one value.
+// So in Union merge, there is only one copy of every value in array.
+struct TestArrayStaticSize* UnionTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB) {
+	struct TestArrayStaticSize* arrC = (struct TestArrayStaticSize*)malloc(sizeof(struct TestArrayStaticSize));
+	int i = 0,
+		j = 0,
+		k = 0;
+
+	// Inset sorted data into new array till one of arrays A or B pointer index is end of the array.
+	while (i < arrA->length && j < arrB->length)
+	{
+		if (arrA->A[i] < arrB->A[j])
+		{
+			arrC->A[k++] = arrA->A[i++];
+		}
+		else if (arrB->A[j] < arrA->A[i])
+		{
+			arrC->A[k++] = arrB->A[j++];
+		}
+		else
+		{
+			arrC->A[k++] = arrA->A[i++];
+			j++;
+		}
+	}
+
+	// One of arrays is end, now we insert last data from other array
+	for (; i < arrA->length; i++)
+	{
+		arrC->A[k++] = arrA->A[i];
+	}
+	for (; j < arrB->length; j++)
+	{
+		arrC->A[k++] = arrB->A[j];
+	}
+
+	arrC->length = k;
+	arrC->size = 10;
+
+	return arrC;
+}
+// Intersection of two sorted arrays. Use StaticTestArrayMain. Intersection differs from merge, by copying only one value of duplicat values.
+// So in Intersection merge, there is only one copy of every duplicate value in array.
+
+struct TestArrayStaticSize* IntersectTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB) {
+	struct TestArrayStaticSize* arrC = (struct TestArrayStaticSize*)malloc(sizeof(struct TestArrayStaticSize));
+	int i = 0,
+		j = 0,
+		k = 0;
+
+	// Inset sorted data into new array till one of arrays A or B pointer index is end of the array.
+	while (i < arrA->length && j < arrB->length)
+	{
+		// A is smaller
+		if (arrA->A[i] < arrB->A[j])
+		{
+			i++;
+		}
+		else if (arrB->A[j] < arrA->A[i])
+		{
+			j++;
+		}
+		else if (arrA->A[i] == arrB->A[j])
+		{
+			arrC->A[k++] = arrA->A[i++];
+			j++;
+		}
+	}
+
+	arrC->length = k;
+	arrC->size = 10;
+
+	return arrC;
+}
+
+// Difference of two sorted arrays. Use StaticTestArrayMain. Difference differs from merge, by copying only values that are not in one of the array.
+// Data will be only copied from the first array (arrA)
+struct TestArrayStaticSize* DifferenceTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB) {
+	struct TestArrayStaticSize* arrC = (struct TestArrayStaticSize*)malloc(sizeof(struct TestArrayStaticSize));
+	int i = 0,
+		j = 0,
+		k = 0;
+
+	// Inset sorted data into new array till one of arrays A or B pointer index is end of the array.
+	while (i < arrA->length && j < arrB->length)
+	{
+		// This value is not in A
+		if (arrA->A[i] < arrB->A[j])
+		{
+			arrC->A[k++] = arrA->A[i++];
+		}
+		// This value is in A 
+		else if (arrB->A[j] < arrA->A[i])
+		{
+			j++;
+		}
+		// Duplicate, no need to add value
+		else
+		{
+			i++;
+			j++;
+		}
+	}
+
+	// Add last values
+	for (; i < arrA->length; i++)
+	{
+		arrC->A[k++] = arrA->A[i];
+	}
+
+	arrC->length = k;
+	arrC->size = 10;
 
 	return arrC;
 }
@@ -388,27 +505,34 @@ struct TestArrayForMerge* MergeTwoTestArrays(struct TestArrayForMerge *arrA, str
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
-	//int numberVal, i;
-	//struct TestArray arr;
+	int numberVal, i;
+	struct TestArray arr;
 
-	//printf("Enter size of array you want to create\n");
-	//scanf_s("%d", &arr.size);
-	//arr.A = (int*)malloc(arr.size * sizeof(int));
-	//arr.length = 0;
+	printf("Enter size of array you want to create\n");
+	scanf_s("%d", &arr.size);
+	arr.A = (int*)malloc(arr.size * sizeof(int));
+	arr.length = 0;
 
-	//printf("How meny numbers do you want to add to the array?\n");
-	//scanf_s("%d", &numberVal);
+	printf("How meny numbers do you want to add to the array?\n");
+	scanf_s("%d", &numberVal);
 
-	//printf("\nWrite all elements: ");
-	//for (i = 0; i < numberVal; i++)
-	//{
-	//	scanf_s("%d", &arr.A[i]);
-	//	arr.length++;
-	//}
+	printf("\nWrite all elements: ");
+	for (i = 0; i < numberVal; i++)
+	{
+		scanf_s("%d", &arr.A[i]);
+		arr.length++;
+	}
 
-	struct TestArrayForMerge arr1 ={{2,5,10,14,23},10,5};
-	struct TestArrayForMerge arr2 = {{3,4,6,12,17},10,5};
-	struct TestArrayForMerge* arr3;
-	arr3 = MergeTwoTestArrays(&arr1, &arr2);
+	DisplayArray(arr);
+}
+
+// Main function, where static array can be tested
+void StaticTestArrayMain() {
+
+	struct TestArrayStaticSize arr1 = { {2,9,21,28,35},10,5 };
+	struct TestArrayStaticSize arr2 = { {2,3,16,18,28},10,5 };
+	struct TestArrayStaticSize* arr3;
+	arr3 = DifferenceTwoTestArrays(&arr1, &arr2);
 	DisplayArrayMerge(*arr3);
+
 }

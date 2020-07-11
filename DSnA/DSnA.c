@@ -6,6 +6,7 @@
 
 void main()
 {
-	TestArrayMain();
+	//TestArrayMain();
+	StaticTestArrayMain();
 }
 
