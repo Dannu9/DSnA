@@ -8,6 +8,7 @@
 // TestArrayMain works for non static array and StaticTestArrayMain is for static version.
 
 void TestArrayMain();
+void StaticTestArrayMain();
 void DisplayArray(struct TestArray arr);
 void DisplayArrayMerge(struct TestArrayStaticSize arr);
 void AddToArray(struct TestArray* arr, int value);
@@ -31,6 +32,12 @@ struct TestArrayStaticSize* MergeTwoTestArrays(struct TestArrayStaticSize* arrA,
 struct TestArrayStaticSize* UnionTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
 struct TestArrayStaticSize* IntersectTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
 struct TestArrayStaticSize* DifferenceTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB);
+void FindMissingElementSortedArrayStartingOne(struct TestArray arr);
+void FindMissingElementSortedArrayStartingN(struct TestArray arr);
+void FindMultipleElementsInSortedArray(struct TestArray arr);
+void FindElementsUsingHashtable(struct TestArray* arr, int mode, int k);
+void FindMultipleElementsInSortedArray(struct TestArray arr);
+
 
 struct TestArray {
 	int* A;
@@ -427,9 +434,9 @@ struct TestArrayStaticSize* UnionTwoTestArrays(struct TestArrayStaticSize* arrA,
 
 	return arrC;
 }
+
 // Intersection of two sorted arrays. Use StaticTestArrayMain. Intersection differs from merge, by copying only one value of duplicat values.
 // So in Intersection merge, there is only one copy of every duplicate value in array.
-
 struct TestArrayStaticSize* IntersectTwoTestArrays(struct TestArrayStaticSize* arrA, struct TestArrayStaticSize* arrB) {
 	struct TestArrayStaticSize* arrC = (struct TestArrayStaticSize*)malloc(sizeof(struct TestArrayStaticSize));
 	int i = 0,
@@ -502,6 +509,154 @@ struct TestArrayStaticSize* DifferenceTwoTestArrays(struct TestArrayStaticSize* 
 	return arrC;
 }
 
+// Print missing element from sorted array starting from 1. Dont try if array is not sorted or there is duplicates 
+// 1 2 4 5 --> 3 is missing
+void FindMissingElementSortedArrayStartingOne(struct TestArray arr) {
+	// Init
+	int sum = 0,
+		i = 0,
+		s = 0;
+
+	// Sum all values in array
+	for (; i < arr.length; i++)
+	{
+		sum += arr.A[i];
+	}
+
+	// Sum of array length, which is last value in array(if no element is missing)
+	s = (arr.A[arr.length-1] * (arr.A[arr.length-1] + 1)) / 2;
+
+	// Print missing value 
+	printf("Missing value is: %d\n", s-sum);
+
+}
+
+// Print missing element from sorted array starting from n value. Dont try if array is not sorted or there is duplicates 
+// 3 4  6 --> 5 is missing
+void FindMissingElementSortedArrayStartingN(struct TestArray arr) {
+	int low = arr.A[0],
+		high = arr.A[arr.length - 1],
+		diff = low - 0,
+		i = 1;
+	for (; i < arr.length; i++)
+	{
+		if (arr.A[i]-i != diff)
+		{
+			printf("Missing value is: %d\n", i + diff);
+			return;
+		}
+	}
+}
+
+// Print missing elements from sorted array starting from n value. Dont try if array is not sorted or there is duplicates 
+void FindMultipleElementsInSortedArray(struct TestArray arr) {
+	int i = 0, j, count = 1;
+	for (;i < arr.length-1; i++)
+	{
+		if (arr.A[i] == arr.A[i+1])
+		{
+			j = i + 1;
+			count = 1;
+			while (arr.A[j] == arr.A[i])
+			{
+				j++;
+				count++;
+			}
+			printf("Value %d is appearing %d times\n", arr.A[i], count);
+			i = j - 1;
+		}
+	}
+}
+
+// Find duplicate values in sorted array. Counts and prints duplicate value
+void FindDuplicateValuesInSortedArray(struct TestArray arr) {
+	int low = arr.A[0],
+		high = arr.A[arr.length - 1],
+		diff = low - 0,
+		i = 0;
+	for (; i < arr.length; i++)
+	{
+		if (arr.A[i] - i != diff)
+		{
+			while (diff < arr.A[i] - i)
+			{
+				printf("Missing value is: %d\n", i + diff);
+				diff++;
+			}
+
+		}
+	}
+}
+
+// Print missing elements from array by using hash table.
+// mode = 0, print missing values. mode = 1 print duplicate values
+// mode = 2, find a paird with sum k (a+b=k)
+void FindElementsUsingHashtable(struct TestArray* arr, int mode, int k) {
+
+	int i;
+	int n = arr->length;
+	int max = arr->A[0];
+	for (i = 1; i < arr->length; i++)
+	{
+		if (arr->A[i] > max)
+		{
+			max = arr->A[i];
+		}
+	}
+
+	// The difference in malloc and calloc is that malloc does not set the memory to zero
+	// where as calloc sets allocated memory to zero.
+	int* htarr = (int*)calloc(max+1, sizeof(int));
+
+	if (mode == 0)
+	{
+		for (i = 0; i < arr->length; i++)
+		{
+			htarr[arr->A[i]]++;
+		}
+
+		printf("Missing values in index: ");
+		for (i = 0; i <= max; i++)
+		{
+			if (htarr[i] == 0)
+			{
+				printf("%d ",i);
+			}
+		}
+	}
+	else if (mode == 1)
+	{
+		for (i = 0; i < arr->length; i++)
+		{
+			htarr[arr->A[i]]++;
+		}
+
+		printf("Duplicate values are: ");
+		for (i = 0; i <= max; i++)
+		{
+			if (htarr[i] > 1)
+			{
+				printf("%d ", i);
+			}
+		}
+	}
+	else if (mode == 2)
+	{
+		for (i = 0; i < arr->length; i++)
+		{
+			// Pair has been found
+			if (htarr[k - arr->A[i]] != 0 && k - arr->A[i] > 0)
+			{
+				printf("Values %d and %d were found\n", arr->A[i], k - arr->A[i]);
+			}
+			htarr[arr->A[i]]++;
+		}
+	}
+
+
+	free(htarr);
+}
+
 // Main function, where test array is created and user can configure it
 void TestArrayMain() {
 
@@ -522,7 +677,9 @@ void TestArrayMain() {
 		scanf_s("%d", &arr.A[i]);
 		arr.length++;
 	}
+	printf("\n");
 
+	FindElementsUsingHashtable(&arr,2,10);
 	DisplayArray(arr);
 }
 
