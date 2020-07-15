@@ -3,10 +3,12 @@
 #include "Recursion.h"
 #include "RandomStuff.h"
 #include "ArrayADT.h"
+#include "String.h"
 
 void main()
 {
-	TestArrayMain();
-	//StaticTestArrayMain();
+	char* s = "TestStringAn dAAA";
+	char* res = ReverseString(s);
+	printf("%s", res);
 }
 
