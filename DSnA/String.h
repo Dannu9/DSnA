@@ -8,6 +8,9 @@ void PrintStringCase(char* s, int mode);
 void PrintCountOfVowelsAndConsonantsAndWords(char* s);
 int StringValidation(char* s);
 char* ReverseString(char* s);
+void CheckIfStringsAreIdentic(char* s1, char* s2, int mode);
+void CheckIfStringIsPalindrome(char* s);
+void PrintCharCount(char* s);
 
 // Calculates the length of string. Returns integer value 
 int LengthOfString(char input[]) 
@@ -158,4 +161,100 @@ char* ReverseString(char* s) {
 
 	ret[tempVal] = '\0';
 	return ret;
+}
+
+// This function takes two strings and comapres them. Result will be printed.
+// Use mode = 0, It is default. Mode = 1 is used in CheckIfStringIsPalindrome
+void CheckIfStringsAreIdentic(char* s1, char* s2, int mode) {
+
+	int i = 0;
+
+	while (s1[i] != '\0' || s2[i] != '\0')
+	{
+		if (s1[i] != s2[i])
+		{
+			if (mode == 0)
+			{
+				printf("Strings are not identical, %d index is different\n", i);
+				return;
+			}
+			else if (mode == 1)
+			{
+				printf("Strings is not a palindrome\n");
+				return;
+			}
+
+		}
+		i++;
+	}
+
+	if (mode == 0)
+	{
+		printf("Strings are identical");
+	}
+	else if (mode == 1)
+	{
+		printf("String is a palindrome");
+	}
+
+
+	/* TEST
+		char* s = "TestStringAn dAAA";
+		char* ss = "TestStringAn dAAsA";
+		CheckIfStringsAreIdentic(s, ss, 0);
+	*/
+}
+
+// This function checks if string is palindrome. Result will be printed out
+// This function uses ReverseString and CheckIfStringsAreIdentic
+void CheckIfStringIsPalindrome(char* s) {
+
+	char* reversed = ReverseString(s);
+	CheckIfStringsAreIdentic(s, reversed, 1);
+
+	/* TEST
+		char* s = "LilliL";
+		CheckIfStringIsPalindrome(s);
+	*/
+}
+
+// Calculate and print all count of all chars in string.
+void PrintCharCount(char* s) {
+	
+	int i = 0, j = 0;
+	char* hashTableUpper = (int*)calloc(25, sizeof(int));
+	char* hashTableLower = (int*)calloc(25, sizeof(int));
+	while (s[i] != '\0')
+	{
+		// Uppercase letter
+		if (s[i] >= 'A' && s[i] <= 'Z')
+		{
+			hashTableUpper[s[i] - 65]++;
+		}// Lowercase letter
+		else if (s[i] >= 'a' && s[i] <= 'z')
+		{
+			hashTableLower[s[i] - 97]++;
+		}
+		i++;
+	}
+
+	for (j = 0; j <= 25; j++)
+	{
+		if (hashTableUpper[j] > 0)
+		{
+			printf("%c - %d\n", j + 65, hashTableUpper[j]);
+		}
+	}
+	for (j = 0; j <= 25; j++)
+	{
+		if (hashTableLower[j] > 0)
+		{
+			printf("%c - %d\n", j + 97, hashTableLower[j]);
+		}
+	}
+
+	/*
+		char* s = "DOES this WORK ss";
+		PrintCharCount(s);	
+	*/
 }

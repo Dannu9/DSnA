@@ -7,8 +7,8 @@
 
 void main()
 {
-	char* s = "TestStringAn dAAA";
-	char* res = ReverseString(s);
-	printf("%s", res);
+	char* s = "DOES this WORK ss";
+	PrintCharCount(s);
+	//printf("%s", res);
 }
 
