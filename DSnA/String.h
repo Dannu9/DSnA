@@ -15,7 +15,7 @@ void PrintDuplicateCharsByUsingBitwise(char* s);
 void PrintIsTwoStringsAnagram(char* a, char* b);
 
 // Calculates the length of string. Returns integer value 
-int LengthOfString(char input[]) 
+int LengthOfString(char* input) 
 {
 	int i = 0;
 	while (input[i] != '\0')
@@ -224,8 +224,8 @@ void CheckIfStringIsPalindrome(char* s) {
 void PrintCharCount(char* s) {
 	
 	int i = 0, j = 0;
-	char* hashTableUpper = (int*)calloc(25, sizeof(int));
-	char* hashTableLower = (int*)calloc(25, sizeof(int));
+	int* hashTableUpper = (int*)calloc(25, sizeof(int));
+	int* hashTableLower = (int*)calloc(25, sizeof(int));
 	while (s[i] != '\0')
 	{
 		// Uppercase letter
@@ -274,7 +274,7 @@ void PrintDuplicateCharsByUsingBitwise(char* s) {
 	{
 		// a-z / 97-122 -> a-z / 0-25
 		x = 1; // Set least significant bit to 1
-		x = x << s[i] - 97; // Shift bit to right postinion, so masking is possible
+		x = x << (s[i] - 97); // Shift bit to right postinion, so masking is possible
 
 		// Check if there is duplicate
 		if ((x&B) > 0)
@@ -293,7 +293,44 @@ void PrintDuplicateCharsByUsingBitwise(char* s) {
 	}
 }
 
-// Prints result if strings are anagram or not.
+// Prints result if strings are anagram or not. Use only with lowercases!! 
 void PrintIsTwoStringsAnagram(char* a, char* b) {
+	int aL = LengthOfString(a);
+	int bL = LengthOfString(b);
+	int i = 0;
 
+	if (aL != bL)
+	{
+		printf("String lengths are not equal\n");
+	}
+	else
+	{
+		int* hashTable = (int*)calloc(25, sizeof(int));
+
+		for (; a[i] != '\0'; i++)
+		{
+			hashTable[a[i] - 97] += 1;
+		}
+
+		for (i = 0; b[i] != '\0'; i++)
+		{
+			hashTable[b[i] - 97] -= 1;
+			if (hashTable[b[i] - 97] < 0)
+			{
+				printf("Strings are not anagram to each other!\n");
+				break;
+			}
+		}
+
+		if (b[i] == '\0')
+		{
+			printf("Strings are anagram to each other! \n");
+		}
+	}
+
+	/* TEST
+	 	char* s1 = "abcvaw";
+		char* s2 = "vbacaw";
+		PrintIsTwoStringsAnagram(s1, s2);
+	*/
 }

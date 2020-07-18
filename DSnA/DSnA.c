@@ -7,8 +7,9 @@
 
 void main()
 {
-	char* s = "abcdefgabsc";
-	PrintDuplicateCharsByUsingBitwise(s);
+	char* s1 = "abcvaw";
+	char* s2 = "vbacaw";
+	PrintIsTwoStringsAnagram(s1, s2);
 	//printf("%s", res);
 }
 
