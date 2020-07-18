@@ -11,6 +11,8 @@ char* ReverseString(char* s);
 void CheckIfStringsAreIdentic(char* s1, char* s2, int mode);
 void CheckIfStringIsPalindrome(char* s);
 void PrintCharCount(char* s);
+void PrintDuplicateCharsByUsingBitwise(char* s);
+void PrintIsTwoStringsAnagram(char* a, char* b);
 
 // Calculates the length of string. Returns integer value 
 int LengthOfString(char input[]) 
@@ -257,4 +259,41 @@ void PrintCharCount(char* s) {
 		char* s = "DOES this WORK ss";
 		PrintCharCount(s);	
 	*/
+}
+
+// Print all duplicate chars in string to console, by using bitwise operations.
+void PrintDuplicateCharsByUsingBitwise(char* s) {
+
+	// Create variable, that uses 4 bytes.
+	// Because we have 25 letters (a-z) we need 25 bits. 4 Bytes = 32 bits, thats enought for this use
+	int B = 0; // Main bitwise area
+	int x = 0; // Used for masking
+
+	int i = 0;
+	for (; i < s[i] != '\0'; i++)
+	{
+		// a-z / 97-122 -> a-z / 0-25
+		x = 1; // Set least significant bit to 1
+		x = x << s[i] - 97; // Shift bit to right postinion, so masking is possible
+
+		// Check if there is duplicate
+		if ((x&B) > 0)
+		{
+			printf("%c value is duplicate\n", s[i]);
+		}
+		else // Merge x to B, so we know that there is atleast one value of specific char
+		{
+			B = x | B;
+		}
+
+		/* TEST
+			char* s = "abcdefgabsc";
+			PrintDuplicateCharsByUsingBitwise(s);
+		*/
+	}
+}
+
+// Prints result if strings are anagram or not.
+void PrintIsTwoStringsAnagram(char* a, char* b) {
+
 }

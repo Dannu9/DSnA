@@ -7,8 +7,8 @@
 
 void main()
 {
-	char* s = "DOES this WORK ss";
-	PrintCharCount(s);
+	char* s = "abcdefgabsc";
+	PrintDuplicateCharsByUsingBitwise(s);
 	//printf("%s", res);
 }
 
