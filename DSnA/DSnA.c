@@ -7,9 +7,8 @@
 
 void main()
 {
-	char* s1 = "abcvaw";
-	char* s2 = "vbacaw";
-	PrintIsTwoStringsAnagram(s1, s2);
+	char* s = "abcde";
+	PrintPermutationsOfaString(s, 0);
 	//printf("%s", res);
 }
 

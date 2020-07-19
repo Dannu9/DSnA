@@ -3,7 +3,7 @@
 // I want to thank Abdul Bari for his Udemy lessons
 // This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
 
-int LengthOfString(char input[]);
+int LengthOfString(char* input);
 void PrintStringCase(char* s, int mode);
 void PrintCountOfVowelsAndConsonantsAndWords(char* s);
 int StringValidation(char* s);
@@ -13,6 +13,7 @@ void CheckIfStringIsPalindrome(char* s);
 void PrintCharCount(char* s);
 void PrintDuplicateCharsByUsingBitwise(char* s);
 void PrintIsTwoStringsAnagram(char* a, char* b);
+void PrintPermutationsOfaString(char* s, int k);
 
 // Calculates the length of string. Returns integer value 
 int LengthOfString(char* input) 
@@ -333,4 +334,40 @@ void PrintIsTwoStringsAnagram(char* a, char* b) {
 		char* s2 = "vbacaw";
 		PrintIsTwoStringsAnagram(s1, s2);
 	*/
+}
+
+// Prints all permutation variatons to console. Max 10 char string. 
+void PrintPermutationsOfaString(char* s, int k) 
+{
+	static int available[10] = { 0 };
+	static char result[10];
+	int i;
+	if (s[k] == '\0')
+	{
+		result[k] = '\0';
+		printf("%s\n",result);
+	}
+	else
+	{
+		for (i = 0; s[i] != '\0'; i++)
+		{
+			if (available[i] == 0)
+			{
+				// Copy to buffer
+				result[k] = s[i];
+				// Mark char as read
+				available[i] = 1;
+				// Recursio
+				PrintPermutationsOfaString(s, k+1);
+				// Mark char is available now
+				available[i] = 0;
+			}
+		}
+	}
+
+	/* TEST (main)
+	 	char* s = "abcde";
+		PrintPermutationsOfaString(s, 0);
+	*/
+	
 }
