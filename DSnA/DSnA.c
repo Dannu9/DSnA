@@ -4,11 +4,10 @@
 #include "RandomStuff.h"
 #include "ArrayADT.h"
 #include "String.h"
+#include "Matrix.h"
 
 void main()
 {
-	char* s = "abcde";
-	PrintPermutationsOfaString(s, 0);
-	//printf("%s", res);
+
 }
 
