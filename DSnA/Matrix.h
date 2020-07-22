@@ -9,6 +9,7 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode);
 void DisplayMatrix(struct Matrix m, int mode);
 void DiagonalMatrixExample();
 void LowerTriangularMatrixExample();
+void UpperTriangularMatrixExample();
 
 // Structure for matrix, A is size and n is used size 
 struct Matrix {
@@ -20,6 +21,8 @@ struct Matrix {
 // mode 0 == diagonal matrix
 // mode 1 == lower triangular matrix (row)
 // mode 2 == lower triangular matrix (column)
+// mode 3 == upper triangular matrix (row)
+// mode 4 == upper triangular matrix (colum)
 void SetToMatrix(struct Matrix *m, int i, int j, int val, int mode) {
 
 	if (mode == 0)
@@ -43,12 +46,28 @@ void SetToMatrix(struct Matrix *m, int i, int j, int val, int mode) {
 			m->A[m->n * (j - 1) +(j - 2) * (j - 1) / 2 + i - j] = val;
 		}
 	}
+	else if (mode == 3)
+	{
+		if (i <= j)
+		{
+			m->A[m->n * (i - 1) + (i - 2) * (i - 1) / 2 + j - i] = val;
+		}
+	}
+	else if (mode == 4)
+	{
+		if (i <= j)
+		{
+			m->A[j * (j - 1) / 2 + i - 1] = val;
+		}
+	}
 }
 
 // Gets value from spesific location in matrix
 // mode 0 == diagonal matrix
 // mode 1 == lower triangular matrix (row)
 // mode 2 == lower triangular matrix (column)
+// mode 3 == upper triangular matrix (row)
+// mode 4 == upper triangular matrix (colum)
 int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 
 	if (mode == 0)
@@ -84,6 +103,28 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 			return 0;
 		}
 	}
+	else if (mode == 3)
+	{
+		if (i <= j)
+		{
+			return m.A[m.n * (i - 1) + (i - 2) * (i - 1) / 2 + j - i];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (mode == 4)
+	{
+		if (i <= j)
+		{
+			return m.A[j * (j - 1) / 2 + i - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
 	else
 	{
 		return 0;
@@ -94,6 +135,8 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 // mode 0 == diagonal matrix
 // mode 1 == lower triangular matrix (row)
 // mode 2 == lower triangular matrix (column)
+// mode 3 == upper triangular matrix (row)
+// mode 4 == upper triangular matrix (colum)
 void DisplayMatrix(struct Matrix m, int mode) {
 
 	if (mode == 0)
@@ -144,6 +187,44 @@ void DisplayMatrix(struct Matrix m, int mode) {
 				if (i >= j)
 				{
 					printf("%d ", m.A[m.n * (j - 1) +(j - 2) * (j - 1) / 2 + i - j]);
+				}
+				else
+				{
+					printf("0 ");
+				}
+			}
+			printf("\n");
+		}
+	}
+	else if (mode == 3)
+	{
+		int i, j;
+		for (i = 1; i <= m.n; i++)
+		{
+			for (j = 1; j <= m.n; j++)
+			{
+				if (i <= j)
+				{
+					printf("%d ", m.A[m.n * (i - 1) + (i - 2) * (i - 1) / 2 + j - i]);
+				}
+				else
+				{
+					printf("0 ");
+				}
+			}
+			printf("\n");
+		}
+	}
+	else if (mode == 4)
+	{
+		int i, j;
+		for (i = 1; i <= m.n; i++)
+		{
+			for (j = 1; j <= m.n; j++)
+			{
+				if (i <= j)
+				{
+					printf("%d ", m.A[j * (j - 1) / 2 + i - 1]);
 				}
 				else
 				{
@@ -256,4 +337,80 @@ void LowerTriangularMatrixExample() {
 	DisplayMatrix(mp, 2);
 	// row
 	// DisplayMatrix(mp, 1);
+}
+
+// Example of upper triangular matrix, with row- and column-major mapping
+void UpperTriangularMatrixExample() {
+
+	/* lower triangular matrix
+	 j >	+----+----+----+----+----+
+	 i		| 11 | 12 | 13 | 14 | 15 |
+	 v		|  0 | 22 | 23 | 24 | 25 |
+			|  0 |  0 | 33 | 34 | 35 |
+			|  0 |  0 |  0 | 44 | 45 |
+			|  0 |  0 |  0 |  0 | 55 |
+			+----+----+----+----+----+
+
+			column major mapping:
+			+--------+----------+----------+-------------+-----------------+-----------------+------------+
+			| column | column 1 | column 2 |   column 3  |    column 4     |      column 5   | total size |
+			+--------+----------+----------+-------------+-----------------+-----------------+------------+
+			| value  |    11    |   12 22  |  13  23  33 |  14  24  34  44 | 15 25 35 45 55  | (0..14) 15 |
+			| A[i]   |     0    |    1  2  |  3   4   5  |   6   7   8   9 | 10 11 12 13 14  |            |
+			+--------+----------+----------+-------------+-----------------+-----------------+------------+
+
+			Finding value in one dimensional array (column):
+			[j(j - 1) / 2 + i - 1]
+
+			example:
+			{1,4} = 4*(4-1) / 2 = 6
+			i-1 = 0
+			6 + 0 = 6
+			{1,4} = A[6]
+
+			row major mapping:
+			+--------+----------------+-------------+------------+----------+----------+------------+
+			| row    |     row 1      |    row 2    |    row 3   |   row 4  |   row 5  | total size |
+			+--------+----------------+-------------+------------+----------+----------+------------+
+			| value  | 11 12 13 14 15 | 22 23 24 25 |  33 34 35  |    44 45 |     55   | (0..14) 15 |
+			| A[i]   | 0  1  2  3  4  |  5  6  7  8 |   9 10 11  |    12 13 |     14   |            |
+			+--------+----------------+-------------+------------+----------+----------+------------+
+
+			Finding value in one dimensional array (row):
+			[n(i-1) - (i-2)(i-1)/2 ] + (j-i)
+
+			example:
+			{2,4} and n = 5 (5x5 matrix)
+
+			n(i-1) = 5*(2-1) = 5
+			(i-2)(i-1)/2 = (0)(1)/2 = 0
+			(j-i) = 2 
+			5-0+2=7
+
+			{2,4} = A[7]
+	*/
+	struct Matrix mp;
+
+	printf("Enter size of matrix: ");
+	scanf_s("%d", &mp.n);
+
+	mp.A = (int*)malloc(sizeof(int) * mp.n * (mp.n + 1 / 2));
+
+	int i, j, val;
+
+	printf("Enter all elements of matrix: \n");
+	for (i = 1; i <= mp.n; i++)
+	{
+		for (j = 1; j <= mp.n; j++)
+		{
+			scanf_s("%d", &val);
+			SetToMatrix(&mp, i, j, val, 4);
+			// row
+			// SetToMatrix(&mp, i, j, val, 3);
+		}
+	}
+	printf("\n");
+	DisplayMatrix(mp, 4);
+	// row
+	// DisplayMatrix(mp, 3);
 }

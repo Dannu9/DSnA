@@ -8,6 +8,6 @@
 
 void main()
 {
-	LowerTriangularMatrixExample();
+	UpperTriangularMatrixExample();
 }
 
