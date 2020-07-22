@@ -13,6 +13,7 @@ void UpperTriangularMatrixExample();
 void SymmetricMatrixExample();
 void TriDiagonalMatrixExample();
 void ToeplitzMatrixExample();
+void SparseMatrixExampleOne();
 
 // Structure for matrix, A is size and n is used size 
 struct Matrix {
@@ -711,4 +712,41 @@ void ToeplitzMatrixExample() {
 
 	printf("\n");
 	DisplayMatrix(mp, 7);
+}
+
+// Example of sparse matrix, using three column representation
+void SparseMatrixExampleOne() {
+	/*
+
+	      1   2   3   4   5   6   7   8  
+	    +---+---+---+---+---+---+---+---+
+	  1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+	  2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+	  3 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+	  4 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+	  5 | 0 | 6 | 0 | 0 | 9 | 0 | 0 | 0 |
+	  6 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 |
+		+---+---+---+---+---+---+---+---+
+
+		three column representation
+		+-----+--------+-------+
+		| row | column | value |
+		+-----+--------+-------+
+		|	6 |      8 |     8 | - first row for column data [row size x colum size x total amount of values]
+		|   1 |      3 |     1 |
+		|   2 |      1 |     3 |
+		|   2 |      8 |     7 |
+		|   3 |      6 |     1 |
+		|   4 |      1 |     2 |
+		|   5 |      2 |     6 |
+		|   5 |      5 |     9 |
+		|   6 |      7 |     4 |
+		+-----+--------+-------+
+
+		compressed sparse rows
+
+		A = [1,3,7,1,2,6,9,4]
+		row = [0,1,3,4,5,7,8]
+		column = [3,1,8,6,1,2,5,7]
+	*/
 }
