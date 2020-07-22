@@ -12,6 +12,7 @@ void LowerTriangularMatrixExample();
 void UpperTriangularMatrixExample();
 void SymmetricMatrixExample();
 void TriDiagonalMatrixExample();
+void ToeplitzMatrixExample();
 
 // Structure for matrix, A is size and n is used size 
 struct Matrix {
@@ -27,6 +28,7 @@ struct Matrix {
 // mode 4 == upper triangular matrix (colum)
 // mode 5 == symetric matrix
 // mode 6 == tri-diagonal matrix
+// mode 7 == Toeplitz matrix
 void SetToMatrix(struct Matrix *m, int i, int j, int val, int mode) {
 
 	if (mode == 0)
@@ -80,6 +82,18 @@ void SetToMatrix(struct Matrix *m, int i, int j, int val, int mode) {
 			m->A[m->n * 2 - 2 + i] = val;
 		}
 	}
+	else if (mode == 7)
+	{
+		// upper
+		if (i <= j)
+		{
+			m->A[j - i] = val;
+		} // lower
+		else if (i > j)
+		{
+			m->A[m->n + i - j - 1] = val;
+		}
+	}
 }
 
 // Gets value from spesific location in matrix
@@ -90,6 +104,7 @@ void SetToMatrix(struct Matrix *m, int i, int j, int val, int mode) {
 // mode 4 == upper triangular matrix (colum)
 // mode 5 == symetric matrix
 // mode 6 == tri-diagonal matrix
+// mode 7 == Toeplitz matrix
 int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 
 	if (mode == 0)
@@ -175,6 +190,18 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 			return m.A[m.n * 2 - 2 + i];
 		}
 	}
+	else if (mode == 7) 
+	{
+		// upper
+		if (i <= j)
+		{
+			return m.A[j - i];
+		} // lower
+		else if (i > j)
+		{
+			return m.A[m.n + i - j - 1];
+		}
+	}
 	else
 	{
 		return 0;
@@ -189,6 +216,7 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 // mode 4 == upper triangular matrix (colum)
 // mode 5 == symetric matrix
 // mode 6 == tri-diagonal matrix
+// mode 7 == Toeplitz matrix
 void DisplayMatrix(struct Matrix m, int mode) {
 
 	if (mode == 0)
@@ -307,31 +335,50 @@ void DisplayMatrix(struct Matrix m, int mode) {
 	}
 	else if (mode == 6)
 	{
-	int i, j;
-	for (i = 1; i <= m.n; i++)
-	{
-		for (j = 1; j <= m.n; j++)
+		int i, j;
+		for (i = 1; i <= m.n; i++)
 		{
-			// lower
-			if (i - j == 1)
+			for (j = 1; j <= m.n; j++)
 			{
-				printf("%d ", m.A[i - 2]);
-			} // mid
-			else if (i - j == 0)
-			{
-				printf("%d ", m.A[m.n - 2 + i]);
-			} // upper
-			else if (i - j == -1)
-			{
-				printf("%d ", m.A[m.n * 2 - 2 + i]);
+				// lower
+				if (i - j == 1)
+				{
+					printf("%d ", m.A[i - 2]);
+				} // mid
+				else if (i - j == 0)
+				{
+					printf("%d ", m.A[m.n - 2 + i]);
+				} // upper
+				else if (i - j == -1)
+				{
+					printf("%d ", m.A[m.n * 2 - 2 + i]);
+				}
+				else
+				{
+					printf("0 ");
+				}
 			}
-			else
-			{
-				printf("0 ");
-			}
+			printf("\n");
 		}
-		printf("\n");
 	}
+	else if (mode == 7) {
+		int i, j;
+		for (i = 1; i <= m.n; i++)
+		{
+			for (j = 1; j <= m.n; j++)
+			{
+				// upper
+				if (i <= j)
+				{
+					printf("%d ", m.A[j - i]);
+				} // lower
+				else if (i > j)
+				{
+					printf("%d ", m.A[m.n + i - j - 1]);
+				}
+			}
+			printf("\n");
+		}
 	}
 }
 
@@ -615,4 +662,53 @@ void TriDiagonalMatrixExample() {
 
 	printf("\n");
 	DisplayMatrix(mp, 6);
+}
+
+// Example of toeplitz matrix
+void ToeplitzMatrixExample() {
+	/* Toeplitz matrix example
+	+----+----+----+----+----+
+	| 1 | 2 | 5 | 7 | 8 |
+	| 3 | 1 | 2 | 5 | 7 |
+	| 9 | 3 | 1 | 2 | 5 |
+	| 4 | 9 | 3 | 1 | 2 |
+	| 6 | 4 | 9 | 3 | 1 |
+	+----+----+----+----+----+
+
+		upper triangle = i <= j --> j-i 
+		lower triangle = i > j --> n+i-j-1
+
+
+		toeplitz mapping:
+		+----------+-----------+----------+------------+
+		| toeplitz |    row    |  column  | total size |
+		+----------+-----------+----------+------------+
+		|   value  | 1 2 5 7 8 |  3 9 4 6 | (0..8) 9   |
+		|   A[i]   | 0 1 2 3 4 |  5 6 7 8 |            |
+		+----------+-----------+----------+------------+
+
+	*/
+
+
+	struct Matrix mp;
+
+	printf("Enter size of matrix: ");
+	scanf_s("%d", &mp.n);
+
+	mp.A = (int*)malloc(sizeof(int) * (mp.n * 2 - 1));
+
+	int i, j, val;
+
+	printf("Enter all elements of matrix: \n");
+	for (i = 1; i <= mp.n; i++)
+	{
+		for (j = 1; j <= mp.n; j++)
+		{
+			scanf_s("%d", &val);
+			SetToMatrix(&mp, i, j, val, 7);
+		}
+	}
+
+	printf("\n");
+	DisplayMatrix(mp, 7);
 }
