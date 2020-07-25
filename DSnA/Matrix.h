@@ -13,12 +13,45 @@ void UpperTriangularMatrixExample();
 void SymmetricMatrixExample();
 void TriDiagonalMatrixExample();
 void ToeplitzMatrixExample();
+// --------------------------- 
+void CreateSparseMatrix(struct Sparse* s);
+void DisplaySparseMatrix(struct Sparse s);
+struct Sparse AddingSparseMatrix(struct Sparse* s1, struct Sparse* s2);
+void CreateCompressedSparse(struct CompressedSparse* s);
+void DisplayCompressedSparseMatrix(struct CompressedSparse s);
 void SparseMatrixExampleOne();
+void SparseMatrixExampleTwo();
+void SumTwoSparseMatrixesExample();
 
 // Structure for matrix, A is size and n is used size 
 struct Matrix {
 	int *A;
 	int n;
+};
+
+// Structure for sprse matrix
+struct Element {
+	int i;
+	int j;
+	int v;
+};
+
+// Structure for Sparse matrix with three colum representation
+struct Sparse {
+	int y; // col
+	int x; // row 
+	int c; // count
+	struct Element *e;
+};
+
+// Structure for Sparse matrix with comressed representation 
+struct CompressedSparse {
+	int* A; // value arr
+	int An; // value arr size
+	int* IA; // row
+	int* JA; // column
+	int m;	// matrix size row
+	int n;  // matrix size column
 };
 
 // Sets value to specific matrixes
@@ -217,7 +250,7 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 // mode 4 == upper triangular matrix (colum)
 // mode 5 == symetric matrix
 // mode 6 == tri-diagonal matrix
-// mode 7 == Toeplitz matrix
+// mode 7 == toeplitz matrix
 void DisplayMatrix(struct Matrix m, int mode) {
 
 	if (mode == 0)
@@ -714,6 +747,153 @@ void ToeplitzMatrixExample() {
 	DisplayMatrix(mp, 7);
 }
 
+// Create sparse matrix (3 column representation)
+void CreateSparseMatrix(struct Sparse* s) {
+	int i;
+	printf("Remember, row and column starts from 0!\n");
+	printf("Write array dimensions (row, column): ");
+	scanf_s("%d%d", &s->y, &s->x);
+	printf("Write count of non-zero values (count): ");
+	scanf_s("%d", &s->c);
+	s->e = (struct Element*)malloc(sizeof(struct Element) * s->c);
+
+	for (i = 0; i < s->c; i++)
+	{
+		printf("Write %d element (row, column, value): ", i+1);
+		scanf_s("%d%d%d", &s->e[i].i, &s->e[i].j, &s->e[i].v);
+	}
+}
+
+// Create compressed sparse matrix
+void CreateCompressedSparse(struct CompressedSparse* s) {
+	printf("Write array dimensions (y,x): ");
+	scanf_s("%d%d", &s->m, &s->n);
+	printf("How many values does this sparse matrix have: ");
+	scanf_s("%d",&s->An);
+	s->A = (int*)calloc(s->An, sizeof(int));
+	s->IA = (int*)calloc(s->An+1, sizeof(int));
+	s->JA = (int*)calloc(s->An, sizeof(int));
+	int i, val;
+	for (i = 0; i < s->An; i++)
+	{
+		printf("Value %d: ", i+1);
+		scanf_s("%d", &s->A[i]);
+	}
+	for (i = 0; i < s->An; i++)
+	{
+		printf("Value number %d is %d, what is the column: ", i + 1, s->A[i]);
+		scanf_s("%d", &s->JA[i]);
+	}
+	for (i = 1; i <= s->An; i++)
+	{
+		printf("How many values are there in row number %d: ", i);
+		scanf_s("%d", &val);
+		int res = s->IA[i - 1] + val;
+		s->IA[i] = res;
+	}
+}
+
+// Function, that prints sparse matrix to console (3 column representation)
+void DisplaySparseMatrix(struct Sparse s) {
+	int i, j, k = 0;
+	printf("\n");
+	for (i = 0; i < s.y; i++)
+	{
+		for (j = 0; j < s.x; j++)
+		{
+			if (i == s.e[k].i && j == s.e[k].j)
+			{
+				printf("%d ", s.e[k++].v);
+			}
+			else
+			{
+				printf("0 ");
+			}
+		}
+		printf("\n");
+	}
+}
+
+// Function, that adds two sparse matrix to and prints result to console (3 column representation)
+struct Sparse AddingSparseMatrix(struct Sparse *s1, struct Sparse *s2) {
+	if (s1->y != s2->y || s1->x != s2->x)
+	{
+		printf("Matrixes are not same size!");
+	}
+	else
+	{
+		struct Sparse *sp;
+		int i=0, j=0, k=0;
+		sp = (struct Sparse*)malloc(sizeof(struct Sparse));
+
+		sp->e = (struct Element*)malloc((s1->c + s2->c) * sizeof(struct Element));
+		
+		while (i < s1->c && j < s2->c)
+		{
+			if (s1->e[i].i < s2->e[j].i)
+			{
+				sp->e[k++] = s1->e[i++];
+			}
+			else if (s1->e[i].i > s2->e[j].i)
+			{
+				sp->e[k++] = s2->e[j++];
+			}
+			else
+			{
+				if (s1->e[i].j < s2->e[j].j)
+				{
+					sp->e[k++] = s1->e[i++];
+				}
+				else if (s1->e[i].j > s2->e[j].j)
+				{
+					sp->e[k++] = s2->e[j++];
+				}
+				else
+				{
+					sp->e[k] = s1->e[i++];
+					sp->e[k++].v += s2->e[j++].v;
+				}
+			}
+		}
+		for (; i < s1->c; i++)
+		{
+			sp->e[k++] = s1->e[i];
+		}
+		for (; j < s2->c; j++)
+		{
+			sp->e[k++] = s2->e[j];
+		}
+		sp->c = k;
+		sp->y = s1->y;
+		sp->x = s1->x;
+	}
+}
+
+// Function, that prints sparse matrix to console (Compressed sparse)
+void DisplayCompressedSparseMatrix(struct CompressedSparse s) {
+	int i, j, rowCal, ja=0, added = 0;
+	printf("\n");
+	for (i = 1; i <= s.m; i++)
+	{
+		added = rowCal = 0;
+		rowCal = s.IA[i] - s.IA[i-1];
+		for (j = 1; j <= s.n; j++)
+		{
+			if (s.JA[ja] == j && rowCal > added)
+			{
+				printf("%d ", s.A[ja]);
+				ja++;
+				added++;
+			}
+			else
+			{
+				printf("0 ");
+			}
+		}
+		printf("\n");
+	}
+}
+
 // Example of sparse matrix, using three column representation
 void SparseMatrixExampleOne() {
 	/*
@@ -743,10 +923,84 @@ void SparseMatrixExampleOne() {
 		|   6 |      7 |     4 |
 		+-----+--------+-------+
 
+	*/
+
+	struct Sparse sp;
+	CreateSparseMatrix(&sp);
+	DisplaySparseMatrix(sp);
+}
+
+// Example of sparse matrix, using compressed sparse row
+void SparseMatrixExampleTwo() {
+	/*
+		  1   2   3   4   5   6   7   8
+		+---+---+---+---+---+---+---+---+
+	  1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+	  2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+	  3 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+	  4 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+	  5 | 0 | 6 | 0 | 0 | 9 | 0 | 0 | 0 |
+	  6 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 |
+		+---+---+---+---+---+---+---+---+
+
 		compressed sparse rows
 
 		A = [1,3,7,1,2,6,9,4]
 		row = [0,1,3,4,5,7,8]
 		column = [3,1,8,6,1,2,5,7]
+
+		TESTED WITH NEXT VALUES
+
+		Write array dimensions (y,x): 8 9
+		How many values does this sparse matrix have: 8
+		Value 1: 3
+		Value 2: 8
+		Value 3: 10
+		Value 4: 4
+		Value 5: 2
+		Value 6: 6
+		Value 7: 9
+		Value 8: 5
+		Value number 1 is 3, what is the column: 8
+		Value number 2 is 8, what is the column: 3
+		Value number 3 is 10, what is the column: 6
+		Value number 4 is 4, what is the column: 1
+		Value number 5 is 2, what is the column: 3
+		Value number 6 is 6, what is the column: 4
+		Value number 7 is 9, what is the column: 2
+		Value number 8 is 5, what is the column: 5
+		How many values are there in row number 1: 1
+		How many values are there in row number 2: 2
+		How many values are there in row number 3: 0
+		How many values are there in row number 4: 1
+		How many values are there in row number 5: 0
+		How many values are there in row number 6: 1
+		How many values are there in row number 7: 1
+		How many values are there in row number 8: 2
+
+		0 0 0 0 0 0 0 3 0
+		0 0 8 0 0 10 0 0 0
+		0 0 0 0 0 0 0 0 0
+		4 0 0 0 0 0 0 0 0
+		0 0 0 0 0 0 0 0 0
+		0 0 2 0 0 0 0 0 0
+		0 0 0 6 0 0 0 0 0
+		0 9 0 0 5 0 0 0 0
 	*/
+
+	struct CompressedSparse cs;
+	CreateCompressedSparse(&cs);
+	DisplayCompressedSparseMatrix(cs);
+}
+
+void SumTwoSparseMatrixesExample() {
+	struct Sparse m1, m2, res;
+
+	CreateSparseMatrix(&m1);
+	DisplaySparseMatrix(m1);
+	printf("\n");
+	CreateSparseMatrix(&m2);
+	DisplaySparseMatrix(m2);
+	res = AddingSparseMatrix(&m1, &m2);
+	DisplaySparseMatrix(res);
 }
