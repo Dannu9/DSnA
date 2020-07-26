@@ -93,6 +93,7 @@ int LengthOfLinkList(struct Node* p) {
 	return count;
 }
 
+// Calculates the sum of all values in link list
 int SumOfAllElementsInLinkList(struct Node* p) {
 	int sum = 0;
 	while (p != NULL)
@@ -103,6 +104,7 @@ int SumOfAllElementsInLinkList(struct Node* p) {
 	return sum;
 }
 
+// search for min and max values in link list
 struct MinMax MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m) {
 	int first = 1;
 	while (p != NULL)
