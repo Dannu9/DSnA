@@ -8,6 +8,6 @@
 
 void main()
 {
-	SumTwoSparseMatrixesExample();
+	AddTwoPolynomialsTogether();
 }
 

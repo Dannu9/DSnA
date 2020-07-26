@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 // I want to thank Abdul Bari for his Udemy lessons
 // This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
@@ -22,6 +23,11 @@ void DisplayCompressedSparseMatrix(struct CompressedSparse s);
 void SparseMatrixExampleOne();
 void SparseMatrixExampleTwo();
 void SumTwoSparseMatrixesExample();
+struct Poly CreatePolynom(struct Poly* poly);
+int CalcPolynom(struct Poly poly, int x);
+void PolynomialRepresentationExample();
+void DisplayPolynom(struct Poly p);
+struct Poly AddTwoPolynomials(struct Poly* p1, struct Poly* p2);
 
 // Structure for matrix, A is size and n is used size 
 struct Matrix {
@@ -52,6 +58,18 @@ struct CompressedSparse {
 	int* JA; // column
 	int m;	// matrix size row
 	int n;  // matrix size column
+};
+
+// Structure that is used in Polyno structure
+struct Term {
+	int coef;
+	int expo;
+};
+
+struct Poly
+{
+	int n;
+	struct Term* term;
 };
 
 // Sets value to specific matrixes
@@ -993,6 +1011,7 @@ void SparseMatrixExampleTwo() {
 	DisplayCompressedSparseMatrix(cs);
 }
 
+// Sum where two sparse matrix are added together
 void SumTwoSparseMatrixesExample() {
 	struct Sparse m1, m2, res;
 
@@ -1003,4 +1022,101 @@ void SumTwoSparseMatrixesExample() {
 	DisplaySparseMatrix(m2);
 	res = AddingSparseMatrix(&m1, &m2);
 	DisplaySparseMatrix(res);
+}
+
+// Create compressed verison on polynomial function
+struct Poly CreatePolynom(struct Poly *poly) {
+	printf("Number of non-zero terms: ");
+	scanf_s("%d", &poly->n);
+	poly->term = (struct Term*)malloc(poly->n * sizeof(struct Term));
+	int i;
+	printf("Enter polynomial terms (coef, expo): \n");
+	for (i = 0; i < poly->n; i++)
+	{
+		printf("Term nuber %d: ", i + 1);
+		scanf_s("%d%d", &poly->term[i].coef, &poly->term[i].expo);
+	}
+}
+
+// Display polynomial function to console
+void DisplayPolynom(struct Poly p) {
+	int i = 0;
+	for (; i < p.n; i++)
+	{
+		if (i == p.n-1)
+		{
+			printf("%dx%d", p.term[i].coef, p.term[i].expo);
+		}
+		else
+		{
+			printf("%dx%d+", p.term[i].coef, p.term[i].expo);
+		}
+	}
+	printf("\n");
+};
+
+// Return calculated value of polynomial, need to insert x value
+int CalcPolynom(struct Poly poly, int x) {
+	int i, sum = 0;
+	for (i = 0; i < poly.n; i++)
+	{
+		sum += poly.term[i].coef * pow(x, poly.term[i].expo);
+	}
+	return sum;
+}
+
+// Polynomial Representation 
+void PolynomialRepresentationExample() {
+	struct Poly pol;
+	CreatePolynom(&pol);
+	int res = CalcPolynom(pol, 5);
+	printf("%d", res);
+}
+
+// Ads two polynomial together
+struct Poly AddTwoPolynomials(struct Poly *p1, struct Poly *p2) {
+	struct Poly rp;
+	rp.term = (struct Term*)malloc((p1->n + p2->n) * sizeof(struct Term));
+
+	int i, j, k;
+	i = j = k = 0;
+	while (i < p1->n && j < p2->n)
+	{
+		if (p1->term[i].expo > p2->term[j].expo)
+		{
+			rp.term[k++] = p1->term[i++];
+		}
+		else if (p1->term[i].expo < p2->term[j].expo)
+		{
+			rp.term[k++] = p2->term[j++];
+		}
+		else
+		{
+			rp.term[k].expo = p1->term[i].expo;
+			rp.term[k++].coef = p1->term[i++].coef + p2->term[j++].coef;
+		}
+		
+	}
+	for (; i < p1->n; i++)
+	{
+		rp.term[k++] = p1->term[i];
+	}
+	for (; j < p2->n; j++)
+	{
+		rp.term[k++] = p2->term[j];
+	}
+	rp.n = k;
+	return rp;
+}
+
+// Example how to add two polynomial together
+void AddTwoPolynomialsTogether() {
+	struct Poly pol1, pol2, res;
+	CreatePolynom(&pol1);
+	DisplayPolynom(pol1);
+	printf("\n");
+	CreatePolynom(&pol2);
+	DisplayPolynom(pol2);
+	res = AddTwoPolynomials(&pol1, &pol2);
+	DisplayPolynom(res);
 }
