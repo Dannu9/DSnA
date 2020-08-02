@@ -9,6 +9,6 @@
 
 void main()
 {
-	CreateAndDisplayLinkListExample();
+	InsertNewNodeInSortedLinkedList();
 }
 

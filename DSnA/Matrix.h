@@ -258,6 +258,7 @@ int GetValFromMatrix(struct Matrix m, int i, int j, int mode) {
 	{
 		return 0;
 	}
+	return 0;
 }
 
 // Display Matrix in console
@@ -1060,7 +1061,7 @@ int CalcPolynom(struct Poly poly, int x) {
 	int i, sum = 0;
 	for (i = 0; i < poly.n; i++)
 	{
-		sum += poly.term[i].coef * pow(x, poly.term[i].expo);
+		sum += (int)(poly.term[i].coef * pow(x, poly.term[i].expo));
 	}
 	return sum;
 }
