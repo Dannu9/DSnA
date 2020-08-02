@@ -9,6 +9,6 @@
 
 void main()
 {
-	InsertNewNodeInSortedLinkedList();
+	ReverseLinkedListExample();
 }
 

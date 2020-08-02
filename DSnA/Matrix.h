@@ -23,7 +23,7 @@ void DisplayCompressedSparseMatrix(struct CompressedSparse s);
 void SparseMatrixExampleOne();
 void SparseMatrixExampleTwo();
 void SumTwoSparseMatrixesExample();
-struct Poly CreatePolynom(struct Poly* poly);
+void CreatePolynom(struct Poly* poly);
 int CalcPolynom(struct Poly poly, int x);
 void PolynomialRepresentationExample();
 void DisplayPolynom(struct Poly p);
@@ -1026,7 +1026,7 @@ void SumTwoSparseMatrixesExample() {
 }
 
 // Create compressed verison on polynomial function
-struct Poly CreatePolynom(struct Poly *poly) {
+void CreatePolynom(struct Poly *poly) {
 	printf("Number of non-zero terms: ");
 	scanf_s("%d", &poly->n);
 	poly->term = (struct Term*)malloc(poly->n * sizeof(struct Term));
