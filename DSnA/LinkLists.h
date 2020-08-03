@@ -12,25 +12,29 @@ void CreateAndDisplayLinkListExample();
 int LengthOfLinkList(struct Node* p);
 int SumOfAllElementsInLinkList(struct Node* p);
 struct MinMax MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m);
+struct Node* CreateLinkListP(int arr[], int n);
 struct Node* LinkListSearch(struct Node* p, int key);
 void InsertNewNodeInLinkedList();
 void InsertNewNodeInSortedLinkedList();
 void DeleteNodeInLinkedListExample();
 void RemoveDuplicatesFromLinkedListexample();
 void ReverseLinkedListExample();
+void ConcatTwoLinkListExample();
+void MergeTwoLinkListsExample();
 void RemoveDuplicatesLinkedList(struct Node* first);
 void AddNodeToLinkedList(struct Node* p, int val, int index);
 void DeleteNodeToLinkedList(struct Node* p,  int index);
 void InsertInSortedLinkedList(struct Node* p, int val);
 void CheckIsLinkedListSorted(struct Node* p);
 void ReverseLinkedList(struct Node* first); 
+void MergeTwoLinkLists(struct Node* aA, struct Node* bA);
 
 // Node structure pointer start
 struct Node {
 	int data;
 	struct Node* next;
 }*first = NULL,
-*last = NULL;
+* last = NULL;
 
 // This struct is used to find min and max values in linked list
 struct MinMax {
@@ -38,9 +42,33 @@ struct MinMax {
 	int max;
 };
 
+// Create link list, and return pointer
+struct Node* CreateLinkListP(int arr[], int n) {
+	int i;
+	// t = temp,
+	struct Node* t, *ret,*last;
+	ret = (struct Node*)malloc(sizeof(struct Node));
+
+	// First node only
+	ret->data = arr[0];
+	ret->next = NULL;
+	last = ret;
+
+	for (i = 1; i < n; i++)
+	{
+		t = (struct Node*)malloc(sizeof(struct Node));
+		t->data = arr[i];
+		t->next = NULL;
+		last->next = t;
+		last = t;
+	}
+
+	return ret;
+}
+
 // Create link list from array 
 void CreateLinkList(int arr[], int n) {
-	int i; 
+	int i;
 	// t = temp, last = last node
 	struct Node* t;
 	first = (struct Node*)malloc(sizeof(struct Node));
@@ -58,7 +86,7 @@ void CreateLinkList(int arr[], int n) {
 		last->next = t;
 		last = t;
 	}
-};
+}
 
 // Print link list to console.
 void DisplayLinkList(struct Node *p) {
@@ -416,11 +444,123 @@ void ReverseLinkedListExample() {
 	| Data | 3 | 4 | 5 | 6 | 7 |
 	+------+---+---+---+---+---+
 	*/
-
 	int A[] = { 3,4,5,6,7 };
 	CreateLinkList(A, 5);
 	DisplayLinkListRecursive(first, 0);
 	ReverseLinkedList(first);
 	printf("\n");
 	DisplayLinkListRecursive(first, 0);
+}
+
+// Concatenating two linked lists
+void ConcatTwoLinkLists(struct Node* aA, struct Node* bA) {
+
+	while (aA->next != NULL)
+	{
+		aA = aA->next;
+	}
+	aA->next = bA;
+	bA = NULL;
+}
+
+// Example of concatenating two linked lists
+void ConcatTwoLinkListExample() {
+	/*
+	A
+	+------+---+---+---+
+	| Node | 1 | 2 | 3 |
+	| Data | 4 | 5 | 6 |
+	+------+---+---+---+
+	B
+	+------+---+---+---+
+	| Node | 1 | 2 | 3 |
+	| Data | 1 | 2 | 3 |
+	+------+---+---+---+
+	*/
+
+	struct Node* pA, * pB;
+
+	int A[] = { 4,5,6 };
+	int B[] = { 1,2,3 };
+	pA = CreateLinkListP(A, 3);
+	pB = CreateLinkListP(B, 3);
+
+	ConcatTwoLinkLists(pA,pB);
+
+	DisplayLinkList(pA);
+}
+
+// Merge two link lists, aA will be new main pointer
+void MergeTwoLinkLists(struct Node* aA, struct Node* bA) {
+	struct Node* start, *last;
+
+	// Ini case
+	if (aA->data < bA->data)
+	{
+		start = last = aA;
+		aA = aA->next;
+		start->next = NULL;
+	}
+	else
+	{
+		start = last = bA;
+		bA = bA->next;
+		start->next = NULL;
+	}
+
+	while (aA != NULL && bA != NULL)
+	{
+		if (aA->data < bA->data)
+		{
+			last->next = aA;
+			last = aA;
+			aA = aA->next;
+			last->next = NULL;
+		}
+		else
+		{
+			last->next = bA;
+			last = bA;
+			bA = bA->next;
+			last->next = NULL;
+		}
+	}
+
+	if (aA != NULL)
+	{
+		last->next = aA;
+	}
+	else
+	{
+		last->next = bA;
+	}
+
+	aA = start;
+}
+
+// Example of merging two link lists
+void MergeTwoLinkListsExample() {
+	/*
+	A
+	+------+---+---+---+---+
+	| Node | 1 | 2 | 3 | 4´|
+	| Data | 2 | 4 | 6 | 8 |
+	+------+---+---+---+---+
+	B
+	+------+---+---+---+---+
+	| Node | 1 | 2 | 3 | 4 |
+	| Data | 1 | 3 | 5 | 7 |
+	+------+---+---+---+---+
+	*/
+
+	struct Node* pA, * pB;
+
+	int A[] = { 2,4,6,8 };
+	int B[] = { 1,3,5,7 };
+	pA = CreateLinkListP(A, 4);
+	pB = CreateLinkListP(B, 4);
+
+	MergeTwoLinkLists(pA, pB);
+
+	DisplayLinkList(pA);
 }
