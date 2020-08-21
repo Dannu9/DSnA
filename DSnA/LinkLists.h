@@ -5,36 +5,47 @@
 // I want to thank Abdul Bari for his Udemy lessons
 // This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
 
-void DisplayLinkList(struct Node *p);
-void DisplayLinkListRecursive(struct Node* p, int reverse);
-void CreateLinkList(int arr[], int n);
-void CreateAndDisplayLinkListExample();
-int LengthOfLinkList(struct Node* p);
-int SumOfAllElementsInLinkList(struct Node* p);
-struct MinMax MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m);
-struct Node* CreateLinkListP(int arr[], int n);
-struct Node* LinkListSearch(struct Node* p, int key);
-void InsertNewNodeInLinkedList();
-void InsertNewNodeInSortedLinkedList();
-void DeleteNodeInLinkedListExample();
-void RemoveDuplicatesFromLinkedListexample();
-void ReverseLinkedListExample();
-void ConcatTwoLinkListExample();
-void MergeTwoLinkListsExample();
-void RemoveDuplicatesLinkedList(struct Node* first);
-void AddNodeToLinkedList(struct Node* p, int val, int index);
-void DeleteNodeToLinkedList(struct Node* p,  int index);
-void InsertInSortedLinkedList(struct Node* p, int val);
-void CheckIsLinkedListSorted(struct Node* p);
-void ReverseLinkedList(struct Node* first); 
-void MergeTwoLinkLists(struct Node* aA, struct Node* bA);
+#pragma region Functions
+	void DisplayLinkList(struct Node* p);
+	void DisplayLinkListRecursive(struct Node* p, int reverse);
+	void DisplayCircularLinkedList(struct Node* head);
+	void CreateLinkList(int arr[], int n);
+	struct Node* CreateCircularLinkedListP(int arr[], int n);
+	void CreateAndDisplayLinkListExample();
+	int LengthOfLinkList(struct Node* p);
+	int SumOfAllElementsInLinkList(struct Node* p);
+	void MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m);
+	struct Node* CreateLinkListP(int arr[], int n);
+	struct Node* LinkListSearch(struct Node* p, int key);
+	void InsertNewNodeInLinkedList();
+	void InsertNewNodeInSortedLinkedList();
+	void DeleteNodeInLinkedListExample();
+	void RemoveDuplicatesFromLinkedListexample();
+	void ReverseLinkedListExample();
+	void ConcatTwoLinkListExample();
+	void MergeTwoLinkListsExample();
+	void CheckIfLinkedListIsLoopExample();
+	void CreateCircularLinkedListAndDisplayExample();
+	void InsertNewNodeToCircularLinkedListExample();
+	void RemoveDuplicatesLinkedList(struct Node* first);
+	void AddNodeToLinkedList(struct Node* p, int val, int index);
+	void DeleteNodeToLinkedList(struct Node* p, int index);
+	void InsertInSortedLinkedList(struct Node* p, int val);
+	void CheckIsLinkedListSorted(struct Node* p);
+	void ReverseLinkedList(struct Node* first);
+	void CheckIfLinkedListIsALoop(struct Node* p);
+	struct Node* InsertNodeToCircularLinkedList(struct Node* p, int val, int index);
+	struct Node* MergeTwoLinkLists(struct Node* aA, struct Node* bA);
+#pragma endregion
+
+
 
 // Node structure pointer start
 struct Node {
 	int data;
 	struct Node* next;
 }*first = NULL,
-* last = NULL;
+*last = NULL;
 
 // This struct is used to find min and max values in linked list
 struct MinMax {
@@ -64,6 +75,29 @@ struct Node* CreateLinkListP(int arr[], int n) {
 	}
 
 	return ret;
+}
+
+// Create circular linked list, and return header pointer;
+struct Node* CreateCircularLinkedListP(int arr[], int n) {
+	int i;
+	struct Node* t, *head, *last;
+
+	head = (struct Node*)malloc(sizeof(struct Node));
+	head->data = arr[0];
+	head->next = head;
+
+	last = head;
+
+	for (i = 1; i < n; i++)
+	{
+		t = (struct Node*)malloc(sizeof(struct Node));
+		t->data = arr[i];
+		t->next = last->next;
+		last->next = t;
+		last = t;
+	}
+
+	return head;
 }
 
 // Create link list from array 
@@ -96,6 +130,19 @@ void DisplayLinkList(struct Node *p) {
 		p = p->next;
 	}
 };
+
+// Print circular linked list to console.
+void DisplayCircularLinkedList(struct Node* head) {
+	struct Node* t;
+	t = (struct Node*)malloc(sizeof(struct Node));
+	t = head;
+	do
+	{
+		printf("%d ", t->data);
+		t = t->next;
+	} while (t != head);
+	printf("\n");
+}
 
 // Print link list using recursion. Int reverse == 0, no reverse
 // reverse == 1, will reverse list
@@ -162,7 +209,7 @@ int SumOfAllElementsInLinkList(struct Node* p) {
 }
 
 // Search for min and max values in link list
-struct MinMax MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m) {
+void MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m) {
 	int first = 1;
 	while (p != NULL)
 	{
@@ -491,7 +538,7 @@ void ConcatTwoLinkListExample() {
 }
 
 // Merge two link lists, aA will be new main pointer
-void MergeTwoLinkLists(struct Node* aA, struct Node* bA) {
+struct Node* MergeTwoLinkLists(struct Node* aA, struct Node* bA) {
 	struct Node* start, *last;
 
 	// Ini case
@@ -535,7 +582,7 @@ void MergeTwoLinkLists(struct Node* aA, struct Node* bA) {
 		last->next = bA;
 	}
 
-	aA = start;
+	return start;
 }
 
 // Example of merging two link lists
@@ -553,14 +600,135 @@ void MergeTwoLinkListsExample() {
 	+------+---+---+---+---+
 	*/
 
-	struct Node* pA, * pB;
+	struct Node* pA, * pB, *res;
 
 	int A[] = { 2,4,6,8 };
 	int B[] = { 1,3,5,7 };
 	pA = CreateLinkListP(A, 4);
 	pB = CreateLinkListP(B, 4);
 
-	MergeTwoLinkLists(pA, pB);
+	res = MergeTwoLinkLists(pA, pB);
 
-	DisplayLinkList(pA);
+	DisplayLinkList(res);
+}
+
+// Example of checking if linked list is a loop (pointer is pointing into a previous node)
+void CheckIfLinkedListIsLoopExample() {
+	struct Node* p1, * p2, *nod1, *nod2;
+
+	// Lets createa a looped linked list and a normal linked list
+	int A[] = { 6,7,8,9,10,11,12,13,14 };
+	int B[] = { 1,2,3,4,5,6,7,8,9 };
+
+	nod1 = CreateLinkListP(A, 9);
+	nod2 = CreateLinkListP(B, 9);
+	p1 = nod1->next->next->next;
+	p2 = nod1->next->next->next->next->next->next->next->next;
+	p2->next = p1;
+
+	// Check if linked list is a loop
+	CheckIfLinkedListIsALoop(p1);
+	CheckIfLinkedListIsALoop(nod2);
+
+}
+
+// Check if linked list is a loop. Prints out the result. 
+void CheckIfLinkedListIsALoop(struct Node* p) {
+
+	struct Node* q, * r;
+	q = r = p; 
+
+	do
+	{
+		q = q->next;
+		r = r->next;
+		if (r != NULL)
+		{
+			r = r->next;
+		}
+	} while (q && r && q != r);
+
+	if (q == r)
+	{
+		printf("\nLinked list is looped\n");
+	}
+	else
+	{
+		printf("\nLinked list is not looped\n");
+	}
+}
+
+// Example how to create circular linked list and display it
+void CreateCircularLinkedListAndDisplayExample() {
+	int A[] = { 1,2,3,4 };
+
+	struct Node* headerNode;
+
+	headerNode = CreateCircularLinkedListP(A,4);
+	DisplayCircularLinkedList(headerNode);
+}
+
+// Example how to insert a new node to circular linked list and then displaying it;
+void InsertNewNodeToCircularLinkedListExample() {
+
+	int A[] = { 1,2,3,4,6};
+	int val, index;
+
+	struct Node* headerNode, * nHeader;
+
+	headerNode = CreateCircularLinkedListP(A, 5);
+	DisplayCircularLinkedList(headerNode);
+
+	printf("\n");
+	printf("\nWhat value do you want to add?\n");
+	scanf_s("%d", &val);
+	printf("\nIndex? ");
+	scanf_s("%d", &index);
+
+	nHeader = InsertNodeToCircularLinkedList(headerNode, val, index);
+	DisplayCircularLinkedList(nHeader);
+}
+
+// Insert new node into ciruclar linked list.
+struct Node* InsertNodeToCircularLinkedList(struct Node* head, int val, int index) {
+	/* Where user can insert
+	Index   0   1   2   3   4   5
+			v   v   v   v   v   v
+	 +------+---+---+---+---+---+
+	 | Node | 1 | 2 | 3 | 4 | 5 |
+	 | Data | 1 | 2 | 3 | 4 | 6 |
+	 +------+---+---+---+---+---+
+	 */
+
+	struct Node* t = (struct Node*)malloc(sizeof(struct Node));
+	struct Node* p = head;
+	int i;
+
+	t->data = val;
+
+	// If val is not a new hear
+	if (index > 0)
+	{
+		for (i = 0; i < index - 1; i++)
+		{
+			p = p->next;
+		}
+
+		t->next = p->next;
+		p->next = t;
+		return head;
+	}
+	else // index is a new header
+	{
+		while (p->next != head)
+		{
+			p = p->next;
+		}
+		t->next = p->next;
+		p->next = t;
+		return t;
+	}
+
+
+	
 }
