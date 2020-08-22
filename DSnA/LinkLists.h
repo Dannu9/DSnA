@@ -6,19 +6,7 @@
 // This code tutorial/examples can be found from this course https://www.udemy.com/course/datastructurescncpp/
 
 #pragma region Functions
-	void DisplayLinkList(struct Node* p);
-	void DisplayLinkListRecursive(struct Node* p, int reverse);
-	void DisplayCircularLinkedList(struct Node* head);
-	void CreateLinkList(int arr[], int n);
-	struct Node* CreateCircularLinkedListP(int arr[], int n);
 	void CreateAndDisplayLinkListExample();
-	int LengthOfLinkList(struct Node* p);
-	int SumOfAllElementsInLinkList(struct Node* p);
-	void MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m);
-	struct Node* CreateLinkListP(int arr[], int n);
-	struct Node* LinkListSearch(struct Node* p, int key);
-	void InsertNewNodeInLinkedList();
-	void InsertNewNodeInSortedLinkedList();
 	void DeleteNodeInLinkedListExample();
 	void RemoveDuplicatesFromLinkedListexample();
 	void ReverseLinkedListExample();
@@ -27,6 +15,23 @@
 	void CheckIfLinkedListIsLoopExample();
 	void CreateCircularLinkedListAndDisplayExample();
 	void InsertNewNodeToCircularLinkedListExample();
+	void DeleteNodeFromCircularLinkedListExample();
+	void CreateAndInsertInDoublyLinkedListExample();
+	void DeleteNodeFromDoublyLinkedList();
+	void FindMiddleNodeInlinkedListExample();
+
+	void DisplayLinkList(struct Node* p);
+	void DisplayLinkListRecursive(struct Node* p, int reverse);
+	void DisplayCircularLinkedList(struct Node* head);
+	void CreateLinkList(int arr[], int n);
+	struct Node* CreateCircularLinkedListP(int arr[], int n);
+	int LengthOfLinkList(struct Node* p);
+	int SumOfAllElementsInLinkList(struct Node* p);
+	void MaxAndMinValuesInLinkedList(struct Node* p, struct MinMax* m);
+	struct Node* CreateLinkListP(int arr[], int n);
+	struct Node* LinkListSearch(struct Node* p, int key);
+	void InsertNewNodeInLinkedList();
+	void InsertNewNodeInSortedLinkedList();
 	void RemoveDuplicatesLinkedList(struct Node* first);
 	void AddNodeToLinkedList(struct Node* p, int val, int index);
 	void DeleteNodeToLinkedList(struct Node* p, int index);
@@ -36,6 +41,11 @@
 	void CheckIfLinkedListIsALoop(struct Node* p);
 	struct Node* InsertNodeToCircularLinkedList(struct Node* p, int val, int index);
 	struct Node* MergeTwoLinkLists(struct Node* aA, struct Node* bA);
+	struct Node* DeleteNodeFromLinkedList(struct Node*, int index);
+	void DisplayDoublyLinkedList(struct dNode* p);
+	struct dNode* InsertInDoublyLinkedList(struct dNode* p, int val, int index);
+	struct dNode* DeleteValFromDoublyLinkedList(struct dNode* first, int index);
+	void PrintMiddleNodeFromLinkList(struct Node*);
 #pragma endregion
 
 
@@ -51,6 +61,11 @@ struct Node {
 struct MinMax {
 	int min;
 	int max;
+};
+
+struct dNode {
+	int data;
+	struct dNode* prev, *next;
 };
 
 // Create link list, and return pointer
@@ -120,6 +135,45 @@ void CreateLinkList(int arr[], int n) {
 		last->next = t;
 		last = t;
 	}
+}
+
+// Created doubly linked list from array
+struct dNode* CreateDoublyLinkedList(int arr[], int length)
+{
+	struct dNode* t, *first, *lastNode;
+	int i;
+
+	first = (struct dNode*)malloc(sizeof(struct dNode));
+
+	// First node
+	first->data = arr[0];
+	first->prev = NULL;
+	first->next = NULL;
+	lastNode = first;
+
+	// Other nodes
+	for (i = 1; i < length; i++)
+	{
+		t = (struct dNode*)malloc(sizeof(struct dNode));
+		t->data = arr[i];
+		t->next = lastNode->next;
+		t->prev = lastNode;
+		lastNode->next = t;
+		lastNode = t;
+	}
+
+	return first;
+
+}
+
+// Display doubly linked list 
+void DisplayDoublyLinkedList(struct dNode* p) {
+	while (p)
+	{
+		printf("%d ", p->data);
+		p = p->next;
+	}
+	printf("\n");
 }
 
 // Print link list to console.
@@ -671,7 +725,7 @@ void CreateCircularLinkedListAndDisplayExample() {
 // Example how to insert a new node to circular linked list and then displaying it;
 void InsertNewNodeToCircularLinkedListExample() {
 
-	int A[] = { 1,2,3,4,6};
+	int A[] = { 1,2,3,4,4,5};
 	int val, index;
 
 	struct Node* headerNode, * nHeader;
@@ -728,7 +782,206 @@ struct Node* InsertNodeToCircularLinkedList(struct Node* head, int val, int inde
 		p->next = t;
 		return t;
 	}
-
-
-	
 }
+
+// Example how to create circular linked list and how to delete a node from it
+void DeleteNodeFromCircularLinkedListExample() {
+	int A[] = { 1,2,3,3,4 };
+	int index;
+
+	struct Node* headerNode, * nHeader;
+
+	headerNode = CreateCircularLinkedListP(A, 5);
+	DisplayCircularLinkedList(headerNode);
+
+	printf("\nDelete - Index? (First is zero index)\n");
+	scanf_s("%d", &index);
+
+	nHeader = DeleteNodeFromLinkedList(headerNode, index);
+	DisplayCircularLinkedList(nHeader);
+}
+
+// Delete node from cirucal linked list
+struct Node* DeleteNodeFromLinkedList(struct Node* head, int index) {
+	/* Where user can delete
+	 +------+---+---+---+---+---+
+	 | Node | 0 | 1 | 2 | 3 | 4 | <-- Index
+	 | Data | 1 | 2 | 3 | 3 | 4 |
+	 +------+---+---+---+---+---+
+	 */
+
+	struct Node* p = head, *t, *del;
+	int i;
+
+
+	// If val is not a new head
+	if (index > 0)
+	{
+		for (i = 0; i < index - 1; i++)
+		{
+			p = p->next;
+		}
+		del = p->next;
+		p->next = p->next->next;
+		free(del);
+		return head;
+	}
+	else // index is a new header
+	{
+		t = head->next;
+		while (p->next != head)
+		{
+			p = p->next;
+		}
+
+		del = p->next;
+		p->next = p->next->next;
+		free(del);
+		return t;
+	}
+}
+
+// Example how to create a double linked list and how to insert new data node in it
+void CreateAndInsertInDoublyLinkedListExample() {
+
+	/* Where user can insert
+	   Index   0   1   2    3   4   5
+			   v   v   v    v   v   v
+		+------+---+---+----+---+---+
+		| Node | 1 | 2 |  3 | 4 | 5 |
+		| Data | 6 | 5 | 12 | 2 | 7 |
+		+------+---+---+----+---+---+
+	*/
+
+	int val, index;
+	int A[] = { 6,5,12,2,57 };
+	struct dNode* head = CreateDoublyLinkedList(A, 5);
+	DisplayDoublyLinkedList(head);
+
+	printf("\n");
+	printf("\nWhat value do you want to add?\n");
+	scanf_s("%d", &val);
+	printf("\nIndex? ");
+	scanf_s("%d", &index);
+
+	head = InsertInDoublyLinkedList(head, val, index);
+	DisplayDoublyLinkedList(head);
+}
+
+// Insert new node in doubly linked list
+struct dNode* InsertInDoublyLinkedList(struct dNode* p, int val, int index) {
+
+	struct dNode* pp;
+	struct dNode* t = (struct dNode*)malloc(sizeof(struct dNode));
+	t->data = val;
+	
+	pp = p;
+
+	// If val is not a new header
+	if (index > 0)
+	{
+		int i;
+		for (i = 0; i < index-1; i++)
+		{
+			pp = pp->next;
+		}
+
+		t->next = pp->next;
+		t->prev = pp;
+		if (pp->next)
+		{
+			pp->next->prev = t;
+		}
+		pp->next = t;
+		return p;
+	}
+	else // index is a new header
+	{
+		t->prev = NULL;
+		p->prev = t;
+		t->next = p;
+		return t;
+	}
+}
+
+// Example how to delete a node from doubly linked list
+void DeleteNodeFromDoublyLinkedList() {
+	int index;
+	int A[] = { 1,2,3,4,5 };
+	struct dNode* head = CreateDoublyLinkedList(A, 5);
+	DisplayDoublyLinkedList(head);
+
+	printf("\nDeleting Index? ");
+	scanf_s("%d", &index);
+
+	head = DeleteValFromDoublyLinkedList(head, index);
+	DisplayDoublyLinkedList(head);
+}
+
+// Delete node from doubly linked list
+struct dNode* DeleteValFromDoublyLinkedList(struct dNode* first, int index) {
+
+	struct dNode* p;
+	p = first;
+	// If val is not a new header
+	if (index > 1)
+	{
+		int i;
+		for (i = 0; i < index - 1; i++)
+		{
+			p = p->next;
+		}
+
+		p->prev->next = p->next;
+		if (p->next)
+		{
+			p->next->prev = p->prev;
+		}
+		free(p);
+		return first;
+	}
+	else // index is a new header
+	{
+		first = first->next;
+		free(p);
+		if (first)
+		{
+			first->prev = NULL;
+		}
+		return first;
+	}
+}
+
+// Example how to find middle node from linked list
+void FindMiddleNodeInlinkedListExample() {
+
+	int A[] = { 1,2,3,4,5,6,7,8,9 };
+	struct Node* list = CreateLinkListP(A, 9);
+	DisplayLinkListRecursive(list, 0);
+
+	printf("\n");
+
+	PrintMiddleNodeFromLinkList(list);
+}
+
+// Find the middle node of linked list
+void PrintMiddleNodeFromLinkList(struct Node* first) {
+
+	struct Node* p, *q;
+	p = q = first;
+	while (q)
+	{
+		q = q->next;
+		if (q)
+		{
+			q = q->next;
+			if (q)
+			{
+				p = p->next;
+			}
+		}
+	}
+	printf("\nMiddle node value is: %d", p->data);
+
+}
+
